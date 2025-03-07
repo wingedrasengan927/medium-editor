@@ -1,0 +1,37 @@
+.react-aria-Toolbar#block-toolbar .react-aria-Button {
+  display: flex;
+  color: var(--highlight-background);
+  background: var(--button-background-light);
+  border: 2px solid var(--highlight-background);
+  border-radius: 50%;
+  appearance: none;
+  margin: 0;
+  outline: none;
+  padding: 4px 4px;
+
+  &[data-pressed] {
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.1);
+    background: var(--button-background-pressed-light);
+    border-color: var(--border-color-pressed-light);
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color-light);
+    outline-offset: -1px;
+  }
+
+  &[data-disabled] {
+    border-color: var(--border-color-disabled-light);
+    color: var(--text-color-disabled-light);
+  }
+}
+
+@keyframes toggle {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

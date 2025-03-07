@@ -1,0 +1,16 @@
+@import "./ButtonTrigger.css";
+@import "./Button.css";
+
+.react-aria-Toolbar#block-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  &[data-orientation="horizontal"] {
+    flex-direction: row;
+  }
+
+  .react-aria-Group {
+    display: contents;
+  }
+}

@@ -1,0 +1,45 @@
+@import "./theme.css";
+
+.react-aria-Toolbar#inline-toolbar .react-aria-ToggleButton {
+  display: flex;
+  color: var(--text-color-dark);
+  background: var(--button-background-dark);
+  border: none;
+  forced-color-adjust: none;
+  border-radius: 0px;
+  appearance: none;
+  font-size: 1rem;
+  margin: 0;
+  outline: none;
+  padding: 4px 8px;
+  margin-right: -6px;
+
+  &[data-selected] {
+    /* Highlight icon when toggled */
+    color: var(--highlight-background);
+
+    /* Disable hover effects when toggled */
+    &[data-hovered] svg {
+      filter: none; /* Remove glow effect */
+    }
+  }
+
+  /* Style for the internal icon */
+  svg {
+    transition: filter 300ms; /* Smooth transition for glow effect */
+  }
+
+  /* Glow effect for the icon when the button is hovered */
+  &[data-hovered] svg {
+    filter: drop-shadow(0 0 6px var(--text-color-hover-dark));
+  }
+
+  &[data-disabled] {
+    color: var(--text-color-disabled-dark);
+
+    /* Disable glow effect when disabled */
+    svg {
+      filter: none; /* Remove any glow */
+    }
+  }
+}

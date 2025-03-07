@@ -1,0 +1,58 @@
+@import "./font-styles.css";
+
+.editor-input {
+  min-height: 256px;
+  padding: 16px;
+  font-size: 21px;
+  line-height: 1.8;
+  outline: none;
+  font-family: "merriweather", sans-serif;
+}
+
+.medium-editor-bold {
+  font-weight: bold;
+}
+
+.medium-editor-italic {
+  font-style: italic;
+}
+
+.medium-editor-code {
+  background-color: #e5e7eb;
+  font-family: "firacode", monospace;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: calc(100% - 2px);
+  font-weight: lighter;
+  font-style: normal;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.medium-editor-h2 {
+  font-family: "merriweather-sans", sans-serif;
+  font-weight: bold;
+}
+
+.medium-editor-h3 {
+  font-family: "merriweather-sans", sans-serif;
+  font-weight: bold;
+}
+
+.medium-editor-h2 .medium-editor-code,
+.medium-editor-h3 .medium-editor-code {
+  font-weight: 600;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.medium-editor-quote {
+  --quote-padding-left: 18px;
+
+  font-style: oblique 10deg;
+  margin: inherit;
+  padding: 2px 0px;
+  padding-left: var(--quote-padding-left);
+  border-left: 4px solid black;
+  margin-left: calc(-1 * var(--quote-padding-left));
+}

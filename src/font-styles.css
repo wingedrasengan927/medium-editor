@@ -1,0 +1,61 @@
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-Regular.ttf");
+}
+
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-Italic.ttf");
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-Light.ttf");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "merriweather";
+  src: url("./assets/fonts/Merriweather/Merriweather-LightItalic.ttf");
+  font-weight: lighter;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "merriweather-sans";
+  src: url("./assets/fonts/Merriweather_Sans/MerriweatherSans-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "merriweather-sans";
+  src: url("./assets/fonts/Merriweather_Sans/MerriweatherSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "firacode";
+  src: url("./assets/fonts/Fira_Code/FiraCode-Light.ttf");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "firacode";
+  src: url("./assets/fonts/Fira_Code/FiraCode-SemiBold.ttf");
+  font-weight: 600;
+}
