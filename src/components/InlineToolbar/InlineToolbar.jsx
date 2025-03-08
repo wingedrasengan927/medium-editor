@@ -13,7 +13,7 @@ import {
   IconBlockquote,
   IconLink,
 } from "@tabler/icons-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
   $getSelection,
   $isRangeSelection,
@@ -31,11 +31,13 @@ import {
   TOGGLE_QUOTE_COMMAND,
   updateToolbarHeadingState,
   updateToolbarQuoteState,
+  getLinkAtSelection,
 } from "../../Plugins/TextFormatPlugin";
+import { LinkToolbar } from "./LinkToolbar";
 
 import "./styles/Toolbar.css";
 
-const ICON_SIZE = 24;
+export const ICON_SIZE = 24;
 const TOP_OFFSET = 16;
 
 export default function InlineToolbar({ editor }) {
@@ -57,6 +59,11 @@ export default function InlineToolbar({ editor }) {
     isQuote: false,
   });
 
+  // Link toolbar state
+  const [isLinkToolbarVisible, setLinkToolbarVisible] = useState(false);
+  const [toolbarWidth, setToolbarWidth] = useState(0);
+  const [existingLinkURL, setExistingLinkURL] = useState("");
+
   // Logic for updating/setting toolbar state
   const updateToolbarFormatState = (selection) => {
     if ($isRangeSelection(selection)) {
@@ -73,6 +80,10 @@ export default function InlineToolbar({ editor }) {
         ...prev,
         ...toolbarHeadingState,
       }));
+
+      // Set the link URL if the selection is at a link node
+      const linkNode = getLinkAtSelection(selection);
+      setExistingLinkURL(linkNode ? linkNode.getURL() : "");
     }
   };
 
@@ -137,8 +148,35 @@ export default function InlineToolbar({ editor }) {
     }
   }, [selectionRectCoords]);
 
+  // Capture the width of the inline toolbar after it has been rendered
+  useLayoutEffect(() => {
+    if (toolbarRef.current) {
+      const computedStyle = window.getComputedStyle(toolbarRef.current);
+      const width = parseFloat(computedStyle.width);
+      setToolbarWidth(width);
+    }
+  }, [selectionRectCoords]);
+
+  // TODO: LinkToolbar should not be a separate toolbar.
+  // It should be a part of the InlineToolbar
+
   return (
-    selectionRectCoords && (
+    selectionRectCoords &&
+    (isLinkToolbarVisible ? (
+      <LinkToolbar
+        style={{
+          position: "absolute",
+          top: toolbarPosition.y,
+          left: toolbarPosition.x,
+          width: toolbarWidth,
+        }}
+        closeToolbar={() => {
+          setLinkToolbarVisible(false);
+          setSelectionRectCoords(null);
+        }}
+        existingLinkURL={existingLinkURL}
+      />
+    ) : (
       <Toolbar
         style={{
           position: "absolute",
@@ -209,12 +247,15 @@ export default function InlineToolbar({ editor }) {
         </Group>
         <Separator orientation="vertical" />
         <Group aria-label="Links">
-          <Button>
+          <Button
+            onPress={() => setLinkToolbarVisible(true)}
+            isDisabled={toolbarState.isHeadingOne}
+          >
             <IconLink size={ICON_SIZE} />
           </Button>
         </Group>
         <div className="inline-toolbar-pointer"></div>
       </Toolbar>
-    )
+    ))
   );
 }

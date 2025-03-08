@@ -1,4 +1,5 @@
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { LinkNode } from "@lexical/link";
 
 const theme = {
   heading: {
@@ -12,6 +13,7 @@ const theme = {
     code: "medium-editor-code",
   },
   quote: "medium-editor-quote",
+  link: "medium-editor-link",
 };
 
 function onError(error) {
@@ -23,5 +25,5 @@ export const initialConfig = {
   namespace: "MyEditor",
   theme,
   onError,
-  nodes: [HeadingNode, QuoteNode],
+  nodes: [HeadingNode, QuoteNode, LinkNode],
 };

@@ -7,6 +7,7 @@
   line-height: 1.8;
   outline: none;
   font-family: "merriweather", sans-serif;
+  color: var(--text-color-light);
 }
 
 .medium-editor-bold {
@@ -55,4 +56,9 @@
   padding-left: var(--quote-padding-left);
   border-left: 4px solid black;
   margin-left: calc(-1 * var(--quote-padding-left));
+}
+
+.medium-editor-link {
+  text-decoration: underline;
+  color: var(--text-color-light);
 }

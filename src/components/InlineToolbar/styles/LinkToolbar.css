@@ -1,0 +1,49 @@
+@import "./Button.css";
+@import "./theme.css";
+
+.react-aria-Toolbar#link-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+
+  &[data-orientation="horizontal"] {
+    flex-direction: row;
+    background: var(--button-background-dark);
+    padding: 6px 8px;
+    border-radius: 6px;
+    position: relative;
+  }
+
+  .react-aria-Group {
+    display: contents;
+
+    > button {
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.react-aria-Toolbar#link-toolbar .react-aria-TextField {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  color: var(--text-color-dark);
+  background: var(--field-background-dark);
+
+  .react-aria-Input,
+  .react-aria-TextArea {
+    padding: 0.286rem;
+    margin: 0;
+    background: var(--field-background-dark);
+    font-size: 1.143rem;
+    color: var(--field-text-color-dark);
+    border: none;
+
+    &[data-focused] {
+      outline: none;
+    }
+  }
+}

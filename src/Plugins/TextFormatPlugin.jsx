@@ -13,13 +13,35 @@ import {
   $getSelection,
   $isRangeSelection,
   $createParagraphNode,
+  CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
 } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { useEffect } from "react";
 import { $findMatchingParent } from "@lexical/utils";
+import { $toggleLink, $isLinkNode } from "@lexical/link";
+import "@lexical/utils";
+import { $isAtNodeEnd } from "@lexical/selection";
 
 export const TOGGLE_HEADING_COMMAND = createCommand("TOGGLE_HEADING_COMMAND");
 export const TOGGLE_QUOTE_COMMAND = createCommand("TOGGLE_QUOTE_COMMAND");
+export const TOGGLE_LINK_COMMAND = createCommand("TOGGLE_LINK_COMMAND");
+
+export function getSelectedNode(selection) {
+  const anchor = selection.anchor;
+  const focus = selection.focus;
+  const anchorNode = selection.anchor.getNode();
+  const focusNode = selection.focus.getNode();
+  if (anchorNode === focusNode) {
+    return anchorNode;
+  }
+  const isBackward = selection.isBackward();
+  if (isBackward) {
+    return $isAtNodeEnd(focus) ? anchorNode : focusNode;
+  } else {
+    return $isAtNodeEnd(anchor) ? anchorNode : focusNode;
+  }
+}
 
 // Helper function to fetch the tag of a node if it or its ancestor is a heading node.
 function fetchTagIfHeadingNode(node) {
@@ -137,11 +159,54 @@ function QuotePlugin() {
   return null;
 }
 
+export function getLinkAtSelection(selection) {
+  if (!$isRangeSelection(selection)) {
+    return null;
+  }
+
+  const node = getSelectedNode(selection);
+  return $findMatchingParent(node, $isLinkNode);
+}
+
+function LinkPlugin() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const unregisterListener = editor.registerCommand(
+      CLICK_COMMAND,
+      (payload) => {
+        const selection = $getSelection();
+        const linkNode = getLinkAtSelection(selection);
+        if (linkNode && (payload.metaKey || payload.ctrlKey)) {
+          window.open(linkNode.getURL(), "_blank");
+          return true;
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+    return unregisterListener;
+  }, [editor]);
+
+  useEffect(() => {
+    const unregisterListener = editor.registerCommand(
+      TOGGLE_LINK_COMMAND,
+      (linkURL) => {
+        $toggleLink(linkURL);
+        return true;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+    return unregisterListener;
+  }, [editor]);
+}
+
 export function TextFormatPlugin() {
   return (
     <>
       <HeadingPlugin />
       <QuotePlugin />
+      <LinkPlugin />
     </>
   );
 }

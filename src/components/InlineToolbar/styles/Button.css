@@ -1,6 +1,7 @@
 @import "./theme.css";
 
-.react-aria-Toolbar#inline-toolbar .react-aria-Button {
+.react-aria-Toolbar#inline-toolbar .react-aria-Button,
+.react-aria-Toolbar#link-toolbar .react-aria-Button {
   display: flex;
   color: var(--text-color-dark);
   background: var(--button-background-dark);

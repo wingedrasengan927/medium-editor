@@ -52,7 +52,8 @@
   }
 }
 
-.react-aria-Toolbar#inline-toolbar .inline-toolbar-pointer {
+.react-aria-Toolbar#inline-toolbar .inline-toolbar-pointer,
+.react-aria-Toolbar#link-toolbar .inline-toolbar-pointer {
   position: absolute;
   bottom: -10px;
   left: 50%;
