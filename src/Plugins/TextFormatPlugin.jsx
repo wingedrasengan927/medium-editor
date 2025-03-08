@@ -171,6 +171,7 @@ export function getLinkAtSelection(selection) {
 function LinkPlugin() {
   const [editor] = useLexicalComposerContext();
 
+  // If a link node is clicked while holding the ctrl key, open the link in a new tab
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       CLICK_COMMAND,

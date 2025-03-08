@@ -7,7 +7,7 @@ import {
 } from "react-aria-components";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { ICON_SIZE } from "./InlineToolbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TOGGLE_LINK_COMMAND } from "../../Plugins/TextFormatPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
