@@ -22,7 +22,7 @@ import {
 } from "lexical";
 import { createDOMRange } from "@lexical/selection";
 import {
-  computeToolbarPosition,
+  computeInlineToolbarPosition,
   OFFSCREEN_POSITION,
   getBoundingRectCoords,
 } from "./utils";
@@ -138,7 +138,11 @@ export default function InlineToolbar({ editor }) {
   useEffect(() => {
     if (selectionRectCoords) {
       setToolbarPosition(
-        computeToolbarPosition(selectionRectCoords, toolbarRef, TOP_OFFSET)
+        computeInlineToolbarPosition(
+          selectionRectCoords,
+          toolbarRef,
+          TOP_OFFSET
+        )
       );
       setTimeout(() => {
         toolbarRef.current?.classList.add("visible");
