@@ -5,19 +5,25 @@ import {
   $getNodeByKey,
   $getRoot,
   $getSelection,
+  $isLineBreakNode,
   $isNodeSelection,
   $isRangeSelection,
+  $isTextNode,
   COMMAND_PRIORITY_HIGH,
+  KEY_ENTER_COMMAND,
   SELECTION_CHANGE_COMMAND,
   TextNode,
 } from "lexical";
 import {
+  $createMathHighlightNodeBlock,
   $createMathHighlightNodeInline,
+  $isMathHighlightNodeBlock,
   $isMathHighlightNodeInline,
   MathHighlightNodeBlock,
   MathHighlightNodeInline,
 } from "../nodes/MathHighlightNode";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
+import { $findMatchingParent } from "@lexical/utils";
 
 // Define the delimiter for math
 export const INLINE_DELIMITERS = [
@@ -74,6 +80,15 @@ export const getMatchMatch = (text) => {
   return earliest;
 };
 
+function validateDelimiters(text) {
+  for (const [opening, closing] of INLINE_DELIMITERS) {
+    if (text.startsWith(opening) && text.endsWith(closing)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function MathPlugin() {
   const [editor] = useLexicalComposerContext();
 
@@ -96,6 +111,14 @@ export function MathPlugin() {
     const removeTransform = editor.registerNodeTransform(TextNode, (node) => {
       // Only run on simple text nodes
       if (!node.isSimpleText()) {
+        return;
+      }
+
+      // Don't run on math highlight nodes
+      if (
+        $isMathHighlightNodeInline(node) ||
+        $findMatchingParent(node, $isMathHighlightNodeBlock)
+      ) {
         return;
       }
 
@@ -158,7 +181,10 @@ export function MathPlugin() {
           if (nodes.length === 1 && $isMathNode(nodes[0])) {
             const mathNode = nodes[0];
             const equation = mathNode.getEquation();
-            const mathHighlightNode = $createMathHighlightNodeInline(equation);
+            const isInline = mathNode.isInline();
+            const mathHighlightNode = isInline
+              ? $createMathHighlightNodeInline(equation)
+              : $createMathHighlightNodeBlock(equation);
             mathNode.replace(mathHighlightNode);
             mathHighlightNode.select();
             return true;
@@ -178,6 +204,57 @@ export function MathPlugin() {
       COMMAND_PRIORITY_HIGH
     );
 
+    return unregisterListener;
+  }, [editor]);
+
+  // handle enter key press inside math highlight block
+  useEffect(() => {
+    const unregisterListener = editor.registerCommand(
+      KEY_ENTER_COMMAND,
+      () => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) {
+          return false;
+        }
+
+        const firstNode = selection.getNodes()[0];
+        const mathHighlightBlock = $findMatchingParent(
+          firstNode,
+          $isMathHighlightNodeBlock
+        );
+        if (!mathHighlightBlock) {
+          return false;
+        }
+
+        // Check if we're at the end of the block
+        const lastChild = mathHighlightBlock.getLastChild();
+        const isAtBlockEnd =
+          selection.isCollapsed() &&
+          // conditions same as in insertNewAfter
+          ((selection.anchor.getNode().getKey() ===
+            mathHighlightBlock.getKey() &&
+            selection.anchor.offset === 0 &&
+            mathHighlightBlock.getChildrenSize() === 0) ||
+            (lastChild &&
+              $isLineBreakNode(lastChild) &&
+              selection.anchor.getNode().getKey() ===
+                mathHighlightBlock.getKey() &&
+              selection.anchor.offset ===
+                mathHighlightBlock.getChildrenSize()) ||
+            (lastChild &&
+              $isTextNode(lastChild) &&
+              selection.anchor.getNode().getKey() === lastChild.getKey() &&
+              selection.anchor.offset === lastChild.getTextContent().length));
+
+        if (isAtBlockEnd) {
+          return false;
+        }
+
+        selection.insertLineBreak();
+        return true;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
     return unregisterListener;
   }, [editor]);
 

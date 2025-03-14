@@ -76,3 +76,11 @@
 .math-rendered {
   cursor: pointer;
 }
+
+.math-highlight-block {
+  background-color: #e5e7eb;
+  font-family: "firacode", monospace;
+  padding: 4px 8px;
+  color: var(--highlight-background);
+  font-size: calc(100% - 2px);
+}
