@@ -26,6 +26,7 @@ export default function BlockToolbarPlugin() {
 
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
           setSelectionRectCoords(null);
+          return false;
         }
 
         const node = getSelectedNode(selection);

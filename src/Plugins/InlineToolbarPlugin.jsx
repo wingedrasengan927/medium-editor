@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import InlineToolbar from "../components/InlineToolbar/InlineToolbar";
+import { $isMathNode } from "../nodes/MathNode";
+import { $isMathHighlightNodeInline } from "../nodes/MathHighlightNode";
 
 const DOM_ELEMENT = document.body;
 
@@ -22,7 +24,23 @@ export default function InlineToolbarPlugin() {
       SELECTION_CHANGE_COMMAND,
       () => {
         const selection = $getSelection();
-        setShouldShow($isRangeSelection(selection) && !selection.isCollapsed());
+
+        if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+          setShouldShow(false);
+          return false;
+        }
+
+        // Get all selected nodes
+        const nodes = selection.getNodes();
+
+        // Don't show if any Math nodes are in the selection
+        const hasMathNode = nodes.some((node) => $isMathNode(node));
+
+        // Don't show if only one node is selected and it's a MathHighlightNode
+        const isSingleMathHighlight =
+          nodes.length === 1 && $isMathHighlightNodeInline(nodes[0]);
+
+        setShouldShow(!hasMathNode && !isSingleMathHighlight);
         return false;
       },
       COMMAND_PRIORITY_HIGH

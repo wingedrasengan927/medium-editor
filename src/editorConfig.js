@@ -1,5 +1,11 @@
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { LinkNode } from "@lexical/link";
+import { MathNode } from "./nodes/MathNode";
+import {
+  MathHighlightNodeInline,
+  MathHighlightNodeBlock,
+} from "./nodes/MathHighlightNode";
+import { CodeNode, CodeHighlightNode } from "@lexical/code";
 
 const theme = {
   heading: {
@@ -14,6 +20,11 @@ const theme = {
   },
   quote: "medium-editor-quote",
   link: "medium-editor-link",
+  math: {
+    rendered: "math-rendered",
+    highlightInline: "math-highlight-inline",
+    highlightBlock: "math-highlight-block",
+  },
 };
 
 function onError(error) {
@@ -25,5 +36,14 @@ export const initialConfig = {
   namespace: "MyEditor",
   theme,
   onError,
-  nodes: [HeadingNode, QuoteNode, LinkNode],
+  nodes: [
+    HeadingNode,
+    QuoteNode,
+    LinkNode,
+    MathNode,
+    MathHighlightNodeInline,
+    MathHighlightNodeBlock,
+    CodeNode,
+    CodeHighlightNode,
+  ],
 };

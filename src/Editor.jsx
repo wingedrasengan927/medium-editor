@@ -8,6 +8,8 @@ import { initialConfig } from "./editorConfig.js";
 import InlineToolbarPlugin from "./Plugins/InlineToolbarPlugin.jsx";
 import { TextFormatPlugin } from "./Plugins/TextFormatPlugin.jsx";
 import BlockToolbarPlugin from "./Plugins/BlockToolbarPlugin.jsx";
+import { MathPlugin } from "./Plugins/MathPlugin.jsx";
+import { CodePlugin } from "./Plugins/CodePlugin.jsx";
 
 import "./editor-styles.css";
 
@@ -23,6 +25,8 @@ export default function Editor() {
       <BlockToolbarPlugin />
       <AutoFocusPlugin />
       <HistoryPlugin />
+      <MathPlugin />
+      <CodePlugin />
     </LexicalComposer>
   );
 }

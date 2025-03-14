@@ -62,3 +62,17 @@
   text-decoration: underline;
   color: var(--text-color-light);
 }
+
+.math-highlight-inline {
+  background-color: #e5e7eb;
+  font-family: "firacode", monospace;
+  padding: 1px 2px;
+  color: var(--highlight-background);
+  font-size: calc(100% - 2px);
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.math-rendered {
+  cursor: pointer;
+}
