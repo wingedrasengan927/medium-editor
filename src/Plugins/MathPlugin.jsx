@@ -80,13 +80,16 @@ export const getMatchMatch = (text) => {
   return earliest;
 };
 
-function validateDelimiters(text) {
-  for (const [opening, closing] of INLINE_DELIMITERS) {
-    if (text.startsWith(opening) && text.endsWith(closing)) {
-      return true;
+export function $getMathHighlightBlockNodes(editor) {
+  const editorState = editor.getEditorState();
+  const allNodes = editorState._nodeMap;
+  const blockNodes = [];
+  for (const [, node] of allNodes) {
+    if ($isMathHighlightNodeBlock(node) && node.isAttached()) {
+      blockNodes.push(node);
     }
   }
-  return false;
+  return blockNodes;
 }
 
 export function MathPlugin() {
@@ -155,16 +158,38 @@ export function MathPlugin() {
     // Helper function to convert math highlight nodes to math nodes
     const convertHighlightNodesToMathNodes = (nodesToExclude = new Set()) => {
       const root = $getRoot();
+
+      // Gather inline highlight nodes
       const allTextNodes = root.getAllTextNodes();
 
+      // Gather block highlight nodes - function deprecated. Need to update
+      const blockNodes = $getMathHighlightBlockNodes(editor);
+
+      // Convert inline highlight nodes
       allTextNodes.forEach((node) => {
         if (
           $isMathHighlightNodeInline(node) &&
           !nodesToExclude.has(node.getKey())
         ) {
           const equation = node.getTextContent();
-          // TODO: validate the equation
+          if (!equation) {
+            node.remove();
+            return;
+          }
           const mathNode = $createMathNode(equation, true);
+          node.replace(mathNode);
+        }
+      });
+
+      // Convert block highlight nodes
+      blockNodes.forEach((node) => {
+        if (!nodesToExclude.has(node.getKey())) {
+          const equation = node.getTextContent();
+          if (!equation) {
+            node.remove();
+            return;
+          }
+          const mathNode = $createMathNode(equation, false);
           node.replace(mathNode);
         }
       });
@@ -190,10 +215,18 @@ export function MathPlugin() {
             return true;
           }
         } else if ($isRangeSelection(selection)) {
-          // For range selection, preserve highlight nodes that are selected
-          const selectedNodeKeys = new Set(
-            selection.getNodes().map((node) => node.getKey())
-          );
+          const selectionNodes = selection.getNodes();
+          const selectedNodeKeys = new Set();
+          selectionNodes.forEach((node) => {
+            selectedNodeKeys.add(node.getKey());
+            const blockNode = $findMatchingParent(
+              node,
+              $isMathHighlightNodeBlock
+            );
+            if (blockNode) {
+              selectedNodeKeys.add(blockNode.getKey());
+            }
+          });
           convertHighlightNodesToMathNodes(selectedNodeKeys);
         } else {
           // No selection, convert all highlight nodes back to math nodes

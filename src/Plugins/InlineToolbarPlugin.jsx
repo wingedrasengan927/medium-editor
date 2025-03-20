@@ -7,10 +7,14 @@ import {
 } from "lexical";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { $findMatchingParent } from "@lexical/utils";
 
 import InlineToolbar from "../components/InlineToolbar/InlineToolbar";
 import { $isMathNode } from "../nodes/MathNode";
-import { $isMathHighlightNodeInline } from "../nodes/MathHighlightNode";
+import {
+  $isMathHighlightNodeBlock,
+  $isMathHighlightNodeInline,
+} from "../nodes/MathHighlightNode";
 
 const DOM_ELEMENT = document.body;
 
@@ -38,7 +42,9 @@ export default function InlineToolbarPlugin() {
 
         // Don't show if only one node is selected and it's a MathHighlightNode
         const isSingleMathHighlight =
-          nodes.length === 1 && $isMathHighlightNodeInline(nodes[0]);
+          nodes.length === 1 &&
+          ($isMathHighlightNodeInline(nodes[0]) ||
+            $findMatchingParent(nodes[0], $isMathHighlightNodeBlock));
 
         setShouldShow(!hasMathNode && !isSingleMathHighlight);
         return false;

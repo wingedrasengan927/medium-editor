@@ -10,10 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@lexical/react": "^0.25.0",
+    "@lexical/react": "^0.28.0",
     "@tabler/icons-react": "^3.30.0",
     "better-react-mathjax": "^2.1.0",
-    "lexical": "^0.25.0",
+    "lexical": "^0.28.0",
     "mathjax": "^3.2.2",
     "react": "^19.0.0",
     "react-aria-components": "^1.6.0",
