@@ -1,4 +1,5 @@
 @import "./font-styles.css";
+@import "./prism-themes/light-theme.css";
 
 .editor-input {
   min-height: 256px;
@@ -83,4 +84,6 @@
   padding: 4px 8px;
   color: var(--highlight-background);
   font-size: calc(100% - 2px);
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
 }

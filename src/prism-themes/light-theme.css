@@ -1,0 +1,62 @@
+.code-block {
+  background-color: #f3f4f6;
+  font-family: "firacode", monospace;
+  font-size: 1rem;
+  display: block;
+  padding: 1.5rem 3rem 1.5rem 3rem;
+  margin-top: 1.75rem;
+  position: relative;
+  overflow-x: auto;
+  line-height: 2rem;
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  tab-size: 4;
+}
+
+.code-block:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-right: 2px solid #e5e7eb;
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  text-align: right;
+  padding: 1.5rem 0.75rem 1rem 0.5rem;
+  white-space: pre-wrap;
+  content: attr(data-gutter);
+  min-width: 30px;
+  box-sizing: border-box;
+}
+
+.tokenComment {
+  color: #6b7280;
+}
+
+.tokenPunctuation {
+  color: #9ca3af;
+}
+
+.tokenProperty {
+  color: #86198f;
+}
+
+.tokenSelector {
+  color: #65a30d;
+}
+
+.tokenOperator {
+  color: #b45309;
+}
+
+.tokenAttr {
+  color: #0891b2;
+}
+
+.tokenVariable {
+  color: #d97706;
+}
+
+.tokenFunction {
+  color: #db2777;
+}

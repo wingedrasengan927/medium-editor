@@ -80,6 +80,33 @@ export const getMatchMatch = (text) => {
   return earliest;
 };
 
+function validateDelimiters(text) {
+  // Helper function to check if a delimiter pair is valid
+  const isValidDelimiter = (opening, closing) => {
+    if (text.startsWith(opening) && text.endsWith(closing)) {
+      const content = text.slice(opening.length, text.length - closing.length);
+      return !content.includes(opening) && !content.includes(closing);
+    }
+    return false;
+  };
+
+  // Check display delimiters first
+  for (const [opening, closing] of DISPLAY_DELIMITERS) {
+    if (isValidDelimiter(opening, closing)) {
+      return { isValid: true, isInline: false };
+    }
+  }
+
+  // Check inline delimiters next
+  for (const [opening, closing] of INLINE_DELIMITERS) {
+    if (isValidDelimiter(opening, closing)) {
+      return { isValid: true, isInline: true };
+    }
+  }
+
+  return { isValid: false, isInline: undefined };
+}
+
 export function $getMathHighlightBlockNodes(editor) {
   const editorState = editor.getEditorState();
   const allNodes = editorState._nodeMap;
@@ -176,8 +203,11 @@ export function MathPlugin() {
             node.remove();
             return;
           }
-          const mathNode = $createMathNode(equation, true);
-          node.replace(mathNode);
+          const validation = validateDelimiters(equation);
+          if (validation.isValid) {
+            const mathNode = $createMathNode(equation, validation.isInline);
+            node.replace(mathNode);
+          }
         }
       });
 
@@ -189,8 +219,11 @@ export function MathPlugin() {
             node.remove();
             return;
           }
-          const mathNode = $createMathNode(equation, false);
-          node.replace(mathNode);
+          const validation = validateDelimiters(equation);
+          if (validation.isValid) {
+            const mathNode = $createMathNode(equation, validation.isInline);
+            node.replace(mathNode);
+          }
         }
       });
     };

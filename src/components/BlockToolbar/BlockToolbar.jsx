@@ -16,17 +16,27 @@ import { OFFSCREEN_POSITION } from "../InlineToolbar/utils";
 import { computeBlockToolbarPosition } from "../InlineToolbar/utils";
 import "./styles/Popover.css";
 
+import { INSERT_CODE_BLOCK_COMMAND } from "../../Plugins/CodePlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+
 const ICON_SIZE = 24;
 const TOOLBAR_OFFSET = 18;
 
 function BlockToolbar() {
+  const [editor] = useLexicalComposerContext();
+
   return (
     <Toolbar aria-label="Block toolbar" id="block-toolbar">
       <Group aria-label="Media">
         <Button aria-label="image">
           <IconPhoto size={ICON_SIZE} />
         </Button>
-        <Button aria-label="code block">
+        <Button
+          aria-label="code block"
+          onPress={() => {
+            editor.dispatchCommand(INSERT_CODE_BLOCK_COMMAND, undefined);
+          }}
+        >
           <IconCodePlus size={ICON_SIZE} />
         </Button>
         <Button aria-label="horizontal divider">
