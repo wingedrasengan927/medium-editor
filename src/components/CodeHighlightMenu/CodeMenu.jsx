@@ -56,7 +56,7 @@ export function CodeMenu({ codeBlockCoords, codeNodeKey }) {
         setLanguage(getLanguageFriendlyName(currentLanguage));
       }
     });
-  }, [editor]);
+  }, [editor, codeNodeKey]);
 
   return (
     <ComboBox
