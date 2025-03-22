@@ -15,6 +15,7 @@ import {
   $isMathHighlightNodeBlock,
   $isMathHighlightNodeInline,
 } from "../nodes/MathHighlightNode";
+import { $isCodeNode } from "@lexical/code";
 
 const DOM_ELEMENT = document.body;
 
@@ -46,7 +47,11 @@ export default function InlineToolbarPlugin() {
           ($isMathHighlightNodeInline(nodes[0]) ||
             $findMatchingParent(nodes[0], $isMathHighlightNodeBlock));
 
-        setShouldShow(!hasMathNode && !isSingleMathHighlight);
+        const isCodeBlock = nodes.some((node) =>
+          $findMatchingParent(node, $isCodeNode)
+        );
+
+        setShouldShow(!hasMathNode && !isSingleMathHighlight && !isCodeBlock);
         return false;
       },
       COMMAND_PRIORITY_HIGH

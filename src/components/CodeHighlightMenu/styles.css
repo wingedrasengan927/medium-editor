@@ -1,0 +1,101 @@
+@import url("../InlineToolbar/styles/theme.css");
+
+.react-aria-ComboBox {
+  color: var(--text-color-light);
+
+  .react-aria-Input {
+    margin: 0;
+    width: 130px;
+    font-family: "helvetica-neue", sans-serif;
+    font-size: 1.072rem;
+    background: var(--field-background-light);
+    color: var(--field-text-color-light);
+    border: 1px solid var(--border-color-light);
+    border-radius: 6px;
+    padding: 0.286rem 2rem 0.286rem 0.571rem;
+    vertical-align: middle;
+    outline: none;
+
+    &[data-focused] {
+      outline: 2px solid var(--focus-ring-color-light);
+      outline-offset: -1px;
+    }
+  }
+
+  .react-aria-Button {
+    background: none;
+    color: var(--highlight-background);
+    forced-color-adjust: none;
+    border-radius: 4px;
+    border: none;
+    margin-left: -1.714rem;
+    width: 1.429rem;
+    height: 1.429rem;
+    padding: 0;
+    font-size: 0.857rem;
+    cursor: default;
+    vertical-align: middle;
+
+    &[data-pressed] {
+      background: var(--highlight-background);
+      color: var(--highlight-foreground);
+    }
+  }
+}
+
+.react-aria-Popover {
+  width: 175px;
+}
+
+.react-aria-ListBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: inherit;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border-color-light);
+  border-radius: 6px;
+  background: var(--overlay-background-light);
+  forced-color-adjust: none;
+  outline: none;
+  max-height: 300px;
+  min-height: 100px;
+  box-sizing: border-box;
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color-light);
+    outline-offset: -1px;
+  }
+}
+
+.react-aria-ListBoxItem {
+  font-family: "helvetica-neue", sans-serif;
+  padding: 0 0.571rem;
+  border-radius: 6px;
+  outline: none;
+  cursor: default;
+  color: var(--text-color-light);
+  font-size: 1.072rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 32px;
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color-light);
+    outline-offset: -2px;
+  }
+
+  &[data-focused],
+  &[data-selected] {
+    background: var(--highlight-background);
+    color: var(--highlight-foreground);
+
+    &[data-focus-visible] {
+      outline-color: var(--highlight-foreground);
+      outline-offset: -4px;
+    }
+  }
+}

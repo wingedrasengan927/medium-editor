@@ -73,3 +73,32 @@ export function computeBlockToolbarPosition(
     y: toolbarY,
   };
 }
+
+export function computeCodeMenuPosition(
+  codeBlockCoords,
+  codeMenuRef,
+  HORIZONTAL_OFFSET = 16,
+  VERTICAL_OFFSET = 12
+) {
+  // Ensure the popover reference is valid
+  if (!codeMenuRef || !codeMenuRef.current) {
+    console.error("Invalid popover reference");
+    return {
+      x: OFFSCREEN_POSITION,
+      y: OFFSCREEN_POSITION,
+    };
+  }
+
+  const codeMenuElement = codeMenuRef.current;
+
+  const { x, y } = codeBlockCoords;
+  const { width } = codeMenuElement.getBoundingClientRect();
+
+  const X = x - width - HORIZONTAL_OFFSET;
+  const Y = y + VERTICAL_OFFSET;
+
+  return {
+    x: X,
+    y: Y,
+  };
+}
