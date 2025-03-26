@@ -10,6 +10,7 @@ import { TextFormatPlugin } from "./Plugins/TextFormatPlugin.jsx";
 import BlockToolbarPlugin from "./Plugins/BlockToolbarPlugin.jsx";
 import { MathPlugin } from "./Plugins/MathPlugin.jsx";
 import { CodePlugin } from "./Plugins/CodePlugin.jsx";
+import { HorizontalDividerPlugin } from "./Plugins/HorizontalDividerPlugin.jsx";
 
 import "./editor-styles.css";
 
@@ -27,6 +28,7 @@ export default function Editor() {
       <HistoryPlugin />
       <MathPlugin />
       <CodePlugin />
+      <HorizontalDividerPlugin />
     </LexicalComposer>
   );
 }

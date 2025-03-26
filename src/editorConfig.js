@@ -6,6 +6,7 @@ import {
   MathHighlightNodeBlock,
 } from "./nodes/MathHighlightNode";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
+import { HorizontalDividerNode } from "./nodes/HorizontalDividerNode";
 
 const theme = {
   heading: {
@@ -20,6 +21,7 @@ const theme = {
   },
   quote: "medium-quote",
   link: "medium-link",
+  divider: "medium-divider",
   math: {
     rendered: "math-rendered",
     highlightInline: "math-highlight-inline",
@@ -79,5 +81,6 @@ export const initialConfig = {
     MathHighlightNodeBlock,
     CodeNode,
     CodeHighlightNode,
+    HorizontalDividerNode,
   ],
 };

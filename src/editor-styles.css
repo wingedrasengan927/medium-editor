@@ -87,3 +87,16 @@
   border: 1px solid #e5e7eb;
   border-radius: 4px;
 }
+
+.medium-divider {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin: 2em 0;
+}
+
+.medium-divider svg circle {
+  fill: #737373;
+}

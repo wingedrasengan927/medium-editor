@@ -17,6 +17,7 @@ import { computeBlockToolbarPosition } from "../InlineToolbar/utils";
 import "./styles/Popover.css";
 
 import { INSERT_CODE_BLOCK_COMMAND } from "../../Plugins/CodePlugin";
+import { INSERT_HORIZONTAL_DIVIDER_COMMAND } from "../../Plugins/HorizontalDividerPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 const ICON_SIZE = 24;
@@ -39,7 +40,15 @@ function BlockToolbar() {
         >
           <IconCodePlus size={ICON_SIZE} />
         </Button>
-        <Button aria-label="horizontal divider">
+        <Button
+          aria-label="horizontal divider"
+          onPress={() => {
+            editor.dispatchCommand(
+              INSERT_HORIZONTAL_DIVIDER_COMMAND,
+              undefined
+            );
+          }}
+        >
           <IconLineDashed size={ICON_SIZE} />
         </Button>
       </Group>
