@@ -7,7 +7,10 @@ import {
   $createParagraphNode,
 } from "lexical";
 import { useEffect } from "react";
-import { $createHorizontalDividerNode } from "../nodes/HorizontalDividerNode";
+import {
+  $createHorizontalDividerNode,
+  HorizontalDividerNode,
+} from "../nodes/HorizontalDividerNode";
 
 export const INSERT_HORIZONTAL_DIVIDER_COMMAND = createCommand(
   "INSERT_HORIZONTAL_DIVIDER_COMMAND"
@@ -17,6 +20,10 @@ export function HorizontalDividerPlugin() {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
+    if (!editor.hasNodes([HorizontalDividerNode])) {
+      throw new Error("HorizontalDividerNode not registered on editor");
+    }
+
     const unregisterCommand = editor.registerCommand(
       INSERT_HORIZONTAL_DIVIDER_COMMAND,
       () => {
