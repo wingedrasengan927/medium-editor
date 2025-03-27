@@ -34,17 +34,15 @@ export function HorizontalDividerPlugin() {
           prevSelection.insertNodes([horizontalDividerNode]);
 
           // Move the selection to the next line after the divider
-          const nextNode =
+          let nextNode =
             horizontalDividerNode.getNextSibling() ||
             horizontalDividerNode.getParent().getNextSibling();
 
-          if (nextNode) {
-            nextNode.selectStart();
-          } else {
-            const paragraphNode = $createParagraphNode();
-            horizontalDividerNode.insertAfter(paragraphNode);
-            paragraphNode.selectStart();
+          if (!nextNode) {
+            nextNode = $createParagraphNode();
+            horizontalDividerNode.insertAfter(nextNode);
           }
+          nextNode.selectStart();
 
           return true;
         }
