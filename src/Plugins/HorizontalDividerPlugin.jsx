@@ -44,6 +44,11 @@ export function HorizontalDividerPlugin() {
           }
           nextNode.selectStart();
 
+          // Bring the focus back to the editor
+          setTimeout(() => {
+            editor.focus();
+          }, 0);
+
           return true;
         }
 

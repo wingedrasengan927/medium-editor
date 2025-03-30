@@ -93,6 +93,12 @@ function CodeBlockPlugin() {
           const codeBlockNode = $createCodeNode();
           prevSelection.insertNodes([codeBlockNode]);
           codeBlockNode.selectStart();
+
+          // Bring the focus back to the editor
+          setTimeout(() => {
+            editor.focus();
+          }, 0);
+
           return true;
         }
 
