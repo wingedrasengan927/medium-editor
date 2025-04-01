@@ -7,6 +7,7 @@ import {
 } from "./nodes/MathHighlightNode";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { HorizontalDividerNode } from "./nodes/HorizontalDividerNode";
+import { ImageNode } from "./nodes/ImageNode";
 
 const theme = {
   heading: {
@@ -27,6 +28,7 @@ const theme = {
     highlightInline: "math-highlight-inline",
     highlightBlock: "math-highlight-block",
   },
+  img: "medium-img",
   // code block
   code: "code-block",
   codeHighlight: {
@@ -82,5 +84,6 @@ export const initialConfig = {
     CodeNode,
     CodeHighlightNode,
     HorizontalDividerNode,
+    ImageNode,
   ],
 };

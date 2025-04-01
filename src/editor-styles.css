@@ -100,3 +100,24 @@
 .medium-divider svg circle {
   fill: #737373;
 }
+
+.medium-img {
+  display: block;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.medium-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.medium-img.selected {
+  outline: 3px solid var(--highlight-background);
+}
+
+.medium-img:not(.selected):hover {
+  outline: 3px solid var(--purple-300-light);
+}

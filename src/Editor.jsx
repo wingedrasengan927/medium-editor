@@ -11,6 +11,7 @@ import BlockToolbarPlugin from "./Plugins/BlockToolbarPlugin.jsx";
 import { MathPlugin } from "./Plugins/MathPlugin.jsx";
 import { CodePlugin } from "./Plugins/CodePlugin.jsx";
 import { HorizontalDividerPlugin } from "./Plugins/HorizontalDividerPlugin.jsx";
+import { ImagePlugin } from "./Plugins/ImagePlugin.jsx";
 
 import "./editor-styles.css";
 
@@ -29,6 +30,7 @@ export default function Editor() {
       <MathPlugin />
       <CodePlugin />
       <HorizontalDividerPlugin />
+      <ImagePlugin />
     </LexicalComposer>
   );
 }

@@ -48,8 +48,8 @@ function CodeHighlightMenuPlugin() {
         const codeNode = $findMatchingParent(node, $isCodeNode);
         if (codeNode) {
           // update selection coordinates when selection changes and the condition is met
-          const DOMNode = editor.getElementByKey(codeNode.getKey());
-          const boundingRect = DOMNode.getBoundingClientRect();
+          const DOMElement = editor.getElementByKey(codeNode.getKey());
+          const boundingRect = DOMElement.getBoundingClientRect();
 
           // Use top-right coordinates
           const X = boundingRect.right;

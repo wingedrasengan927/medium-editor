@@ -32,8 +32,8 @@ export default function BlockToolbarPlugin() {
         const node = getSelectedNode(selection);
         if ($isParagraphNode(node) && node.getTextContent() === "") {
           // update selection coordinates when selection changes and the condition is met
-          const DOMNode = editor.getElementByKey(node.getKey());
-          const boundingRect = DOMNode.getBoundingClientRect();
+          const DOMElement = editor.getElementByKey(node.getKey());
+          const boundingRect = DOMElement.getBoundingClientRect();
 
           const X = boundingRect.left;
           const centerY =
