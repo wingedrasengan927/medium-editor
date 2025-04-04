@@ -5,6 +5,7 @@ import {
   $createHeadingNode,
   $isQuoteNode,
   $createQuoteNode,
+  HeadingNode,
 } from "@lexical/rich-text";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
@@ -15,6 +16,7 @@ import {
   $createParagraphNode,
   CLICK_COMMAND,
   COMMAND_PRIORITY_LOW,
+  $getRoot,
 } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { useEffect } from "react";
@@ -119,6 +121,35 @@ function HeadingPlugin() {
     return unregisterListener;
   }, [editor]);
 
+  // Effect for NodeTransform: H2 at start -> H1
+  useEffect(() => {
+    const unregisterTransform = editor.registerNodeTransform(
+      HeadingNode,
+      (node) => {
+        // Check if it's an H2 node
+        if (node.getTag() !== "h2") {
+          return;
+        }
+
+        // Get the root node and the first child
+        const root = $getRoot();
+        const firstChild = root.getFirstChild();
+
+        // Check if this H2 node is the very first child of the root
+        if (firstChild !== null && node.is(firstChild)) {
+          const children = node.getChildren();
+          const h1Node = $createHeadingNode("h1");
+          h1Node.append(...children);
+          node.replace(h1Node);
+        }
+      }
+    );
+
+    return () => {
+      unregisterTransform();
+    };
+  }, [editor]);
+
   return null;
 }
 
@@ -200,6 +231,8 @@ function LinkPlugin() {
     );
     return unregisterListener;
   }, [editor]);
+
+  return null;
 }
 
 export function TextFormatPlugin() {

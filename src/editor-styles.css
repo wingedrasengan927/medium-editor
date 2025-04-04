@@ -11,15 +11,15 @@
   color: var(--text-color-light);
 }
 
-.medium-editor-bold {
+.medium-bold {
   font-weight: bold;
 }
 
-.medium-editor-italic {
+.medium-italic {
   font-style: italic;
 }
 
-.medium-editor-code {
+.medium-code {
   background-color: #e5e7eb;
   font-family: "firacode", monospace;
   padding: 1px 6px;
@@ -31,24 +31,32 @@
   margin-right: 2px;
 }
 
-.medium-editor-h2 {
-  font-family: "merriweather-sans", sans-serif;
-  font-weight: bold;
+.medium-h1 {
+  font-family: "playfair_display", serif;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.medium-editor-h3 {
+.medium-h2 {
   font-family: "merriweather-sans", sans-serif;
   font-weight: bold;
+  margin-bottom: 6px;
 }
 
-.medium-editor-h2 .medium-editor-code,
-.medium-editor-h3 .medium-editor-code {
+.medium-h3 {
+  font-family: "merriweather-sans", sans-serif;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.medium-h2 .medium-code,
+.medium-h3 .medium-code {
   font-weight: 600;
   margin-left: 4px;
   margin-right: 4px;
 }
 
-.medium-editor-quote {
+.medium-quote {
   --quote-padding-left: 18px;
 
   font-style: oblique 10deg;
@@ -59,7 +67,7 @@
   margin-left: calc(-1 * var(--quote-padding-left));
 }
 
-.medium-editor-link {
+.medium-link {
   text-decoration: underline;
   color: var(--text-color-light);
 }

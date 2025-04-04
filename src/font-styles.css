@@ -59,3 +59,9 @@
   src: url("./assets/fonts/Fira_Code/FiraCode-SemiBold.ttf");
   font-weight: 600;
 }
+
+@font-face {
+  font-family: "playfair_display";
+  src: url("./assets/fonts/Playfair_Display/PlayfairDisplay-SemiBold.ttf");
+  font-weight: 600;
+}
