@@ -34,19 +34,22 @@
 .medium-h1 {
   font-family: "playfair_display", serif;
   font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .medium-h2 {
   font-family: "merriweather-sans", sans-serif;
   font-weight: bold;
-  margin-bottom: 6px;
 }
 
 .medium-h3 {
   font-family: "merriweather-sans", sans-serif;
   font-weight: bold;
-  margin-bottom: 4px;
+}
+
+.medium-h1,
+.medium-h2,
+.medium-h3 {
+  margin-bottom: 0px;
 }
 
 .medium-h2 .medium-code,
@@ -54,6 +57,10 @@
   font-weight: 600;
   margin-left: 4px;
   margin-right: 4px;
+}
+
+.heading-above {
+  margin-top: 0px;
 }
 
 .medium-quote {

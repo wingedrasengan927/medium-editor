@@ -17,6 +17,7 @@ import {
   CLICK_COMMAND,
   COMMAND_PRIORITY_LOW,
   $getRoot,
+  ParagraphNode,
 } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { useEffect } from "react";
@@ -235,12 +236,54 @@ function LinkPlugin() {
   return null;
 }
 
+/*  Adds a CSS class to ElementNodes (excluding HeadingNodes) that follow a HeadingNode. */
+function AdjacentHeadingPlugin() {
+  const [editor] = useLexicalComposerContext();
+  const HEADING_ABOVE_CLASS = "heading-above";
+
+  useEffect(() => {
+    // Register a transform for the base ElementNode.
+    const unregisterTransform = editor.registerNodeTransform(
+      ParagraphNode,
+      (node) => {
+        if ($isHeadingNode(node)) {
+          console.log("Heading node");
+          return;
+        }
+
+        const element = editor.getElementByKey(node.getKey());
+        if (!element) {
+          return;
+        }
+
+        const prevSibling = node.getPreviousSibling();
+        const shouldHaveClass = $isHeadingNode(prevSibling);
+
+        // Check if the DOM element *currently* has the class.
+        const alreadyHasClass = element.classList.contains(HEADING_ABOVE_CLASS);
+
+        // Add or remove the class directly on the DOM element to achieve the desired state.
+        if (shouldHaveClass && !alreadyHasClass) {
+          element.classList.add(HEADING_ABOVE_CLASS);
+        } else if (!shouldHaveClass && alreadyHasClass) {
+          element.classList.remove(HEADING_ABOVE_CLASS);
+        }
+      }
+    );
+
+    return unregisterTransform;
+  }, [editor]);
+
+  return null;
+}
+
 export function TextFormatPlugin() {
   return (
     <>
       <HeadingPlugin />
       <QuotePlugin />
       <LinkPlugin />
+      <AdjacentHeadingPlugin />
     </>
   );
 }
