@@ -10,6 +10,7 @@ import {
   $isNodeSelection,
   COMMAND_PRIORITY_LOW,
   $getNodeByKey,
+  PASTE_COMMAND,
 } from "lexical";
 import { useEffect, useRef } from "react";
 import { $createImageNode, $isImageNode, ImageNode } from "../nodes/ImageNode";
@@ -17,6 +18,11 @@ import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 
 export const INSERT_IMAGE_COMMAND = createCommand("INSERT_IMAGE_COMMAND");
 const SELECTED_CLASS_NAME = "selected";
+
+// Helper to check if a file is an image
+function isImageFile(file) {
+  return file && file.type && file.type.startsWith("image/");
+}
 
 export function ImagePlugin() {
   const [editor] = useLexicalComposerContext();
@@ -88,6 +94,61 @@ export function ImagePlugin() {
     );
 
     return unregisterCommand;
+  }, [editor]);
+
+  // --- Handle PASTE_COMMAND ---
+  useEffect(() => {
+    const unregisterPasteCommand = editor.registerCommand(
+      PASTE_COMMAND,
+      (event) => {
+        const clipboardData = event.clipboardData;
+        if (!clipboardData) {
+          return false;
+        }
+
+        const files = Array.from(clipboardData.files);
+        const imageFiles = files.filter(isImageFile);
+
+        if (imageFiles.length === 1) {
+          event.preventDefault();
+
+          const imageFile = imageFiles[0];
+          const selection = $getSelection() || $getPreviousSelection();
+
+          if (!$isRangeSelection(selection)) {
+            return false;
+          }
+
+          // Create a blob URL for the single image
+          const imageUrl = URL.createObjectURL(imageFile);
+          const imageNode = $createImageNode(imageUrl);
+
+          // Insert the image node
+          selection.insertNodes([imageNode]);
+
+          // Insert a paragraph node after the image node if the next node is empty
+          let nextNode =
+            imageNode.getNextSibling() ||
+            imageNode.getParent().getNextSibling();
+
+          if (!nextNode) {
+            nextNode = $createParagraphNode();
+            imageNode.insertAfter(nextNode);
+          }
+
+          imageNode.select();
+
+          // URL.revokeObjectURL(imageUrl);
+
+          return true;
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+
+    return unregisterPasteCommand;
   }, [editor]);
 
   return (
