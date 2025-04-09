@@ -14,6 +14,7 @@ import { HorizontalDividerPlugin } from "./Plugins/HorizontalDividerPlugin.jsx";
 import { ImagePlugin } from "./Plugins/ImagePlugin.jsx";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListPluginExtended } from "./Plugins/ListPluginExtended.jsx";
+import { TabInterceptorPlugin } from "./Plugins/TabInterceptorPlugin.jsx";
 
 import "./editor-styles.css";
 
@@ -35,6 +36,7 @@ export default function Editor() {
       <ImagePlugin />
       <ListPlugin />
       <ListPluginExtended />
+      <TabInterceptorPlugin />
     </LexicalComposer>
   );
 }
