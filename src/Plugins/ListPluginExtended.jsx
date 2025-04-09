@@ -12,7 +12,7 @@ import {
 import { $findMatchingParent } from "@lexical/utils";
 import { getSelectedNode } from "./TextFormatPlugin";
 
-const MAX_INDENT_LEVEL = 4;
+const MAX_INDENT_LEVEL = 3;
 
 export function ListPluginExtended() {
   const [editor] = useLexicalComposerContext();
