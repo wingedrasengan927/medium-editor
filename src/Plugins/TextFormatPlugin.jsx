@@ -17,12 +17,14 @@ import {
   CLICK_COMMAND,
   COMMAND_PRIORITY_LOW,
   $getRoot,
-  ParagraphNode,
+  TextNode,
+  $isParagraphNode,
 } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { useEffect } from "react";
 import { $findMatchingParent } from "@lexical/utils";
 import { $toggleLink, $isLinkNode } from "@lexical/link";
+import { $isListNode } from "@lexical/list";
 import "@lexical/utils";
 import { $isAtNodeEnd } from "@lexical/selection";
 
@@ -242,14 +244,22 @@ function AdjacentHeadingPlugin() {
   const HEADING_ABOVE_CLASS = "heading-above";
 
   useEffect(() => {
-    // Register a transform for the base ElementNode.
     const unregisterTransform = editor.registerNodeTransform(
-      ParagraphNode,
-      (node) => {
-        if ($isHeadingNode(node)) {
-          console.log("Heading node");
+      TextNode,
+      (textNode) => {
+        const parentNode =
+          $findMatchingParent(textNode, $isParagraphNode) ||
+          $findMatchingParent(textNode, $isListNode);
+
+        if (!parentNode) {
           return;
         }
+
+        if ($isHeadingNode(parentNode)) {
+          return;
+        }
+
+        const node = parentNode;
 
         const element = editor.getElementByKey(node.getKey());
         if (!element) {

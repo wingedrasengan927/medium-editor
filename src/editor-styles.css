@@ -135,3 +135,13 @@
 .medium-img:not(.selected):hover {
   outline: 3px solid var(--purple-300-light);
 }
+
+.medium-ol,
+.medium-ul {
+  padding-left: 0px;
+  list-style-position: inside;
+}
+
+.medium-listitem::marker {
+  font-family: "firacode", monospace;
+}

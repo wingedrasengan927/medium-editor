@@ -8,6 +8,7 @@ import {
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { HorizontalDividerNode } from "./nodes/HorizontalDividerNode";
 import { ImageNode } from "./nodes/ImageNode";
+import { ListItemNode, ListNode } from "@lexical/list";
 
 const theme = {
   heading: {
@@ -29,6 +30,14 @@ const theme = {
     highlightBlock: "math-highlight-block",
   },
   img: "medium-img",
+  list: {
+    nested: {
+      listitem: "medium-nested-listitem",
+    },
+    ol: "medium-ol",
+    ul: "medium-ul",
+    listitem: "medium-listitem",
+  },
   // code block
   code: "code-block",
   codeHighlight: {
@@ -85,5 +94,7 @@ export const initialConfig = {
     CodeHighlightNode,
     HorizontalDividerNode,
     ImageNode,
+    ListNode,
+    ListItemNode,
   ],
 };

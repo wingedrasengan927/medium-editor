@@ -12,6 +12,8 @@ import { MathPlugin } from "./Plugins/MathPlugin.jsx";
 import { CodePlugin } from "./Plugins/CodePlugin.jsx";
 import { HorizontalDividerPlugin } from "./Plugins/HorizontalDividerPlugin.jsx";
 import { ImagePlugin } from "./Plugins/ImagePlugin.jsx";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { ListPluginExtended } from "./Plugins/ListPluginExtended.jsx";
 
 import "./editor-styles.css";
 
@@ -31,6 +33,8 @@ export default function Editor() {
       <CodePlugin />
       <HorizontalDividerPlugin />
       <ImagePlugin />
+      <ListPlugin />
+      <ListPluginExtended />
     </LexicalComposer>
   );
 }
