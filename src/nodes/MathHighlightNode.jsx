@@ -27,6 +27,30 @@ export class MathHighlightNodeInline extends TextNode {
     return element;
   }
 
+  static importJSON(serializedNode) {
+    // This method will likely be never used
+    return null;
+  }
+
+  exportJSON() {
+    // Export as a MathNode
+    return {
+      type: "math",
+      version: 1,
+      equation: this.getTextContent(),
+      inline: true,
+    };
+  }
+
+  exportDOM(editor) {
+    // Export as a MathNode
+    const element = document.createElement("span");
+    addClassNamesToElement(element, editor._config.theme.math.rendered);
+    element.textContent = this.getTextContent();
+    element.setAttribute("data-lexical-math", "true");
+    return { element };
+  }
+
   canInsertTextAfter() {
     return false;
   }
@@ -67,6 +91,27 @@ export class MathHighlightNodeBlock extends ElementNode {
 
   updateDOM() {
     return false;
+  }
+
+  static importJSON(serializedNode) {
+    return null;
+  }
+
+  exportJSON() {
+    return {
+      type: "math",
+      version: 1,
+      equation: this.getTextContent(),
+      inline: false,
+    };
+  }
+
+  exportDOM(editor) {
+    const element = document.createElement("div");
+    addClassNamesToElement(element, editor._config.theme.math.rendered);
+    element.textContent = this.getTextContent();
+    element.setAttribute("data-lexical-math", "true");
+    return { element };
   }
 
   collapseAtStart() {

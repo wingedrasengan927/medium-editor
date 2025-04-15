@@ -52,9 +52,54 @@ export class MathNode extends DecoratorNode {
     return false;
   }
 
+  static importDOM() {
+    return {
+      span: (node) => ({
+        conversion: $convertMathElement,
+        priority: 1,
+      }),
+      div: (node) => ({
+        conversion: $convertMathElement,
+        priority: 1,
+      }),
+    };
+  }
+
+  exportDOM(editor) {
+    const { element } = super.exportDOM(editor); // calls the createDOM method
+    element.textContent = this.getEquation();
+    element.setAttribute("data-lexical-math", "true");
+    return { element };
+  }
+
+  static importJSON(serializedNode) {
+    const { equation, inline } = serializedNode;
+    return $createMathNode(equation, inline).updateFromJSON(serializedNode);
+  }
+
+  exportJSON() {
+    return {
+      ...super.exportJSON(),
+      equation: this.getEquation(),
+      inline: this.isInline(),
+    };
+  }
+
   decorate() {
     return <MathJax inline={this.__inline}>{this.__equation}</MathJax>;
   }
+}
+
+function $convertMathElement(element) {
+  const nodeName = element.nodeName.toLowerCase();
+  let node = null;
+  if (element.getAttribute("data-lexical-math") === "true") {
+    const equation = element.textContent;
+    const inline = nodeName === "span";
+    node = $createMathNode(equation, inline);
+  }
+
+  return { node };
 }
 
 export function $createMathNode(equation, inline) {

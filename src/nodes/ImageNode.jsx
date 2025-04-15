@@ -30,6 +30,38 @@ export class ImageNode extends DecoratorNode {
     return false;
   }
 
+  static importDOM() {
+    return {
+      div: (node) => ({
+        conversion: $convertImageElement,
+        priority: 1,
+      }),
+    };
+  }
+
+  exportDOM(editor) {
+    const { element } = super.exportDOM(editor);
+    element.setAttribute("data-lexical-image-container", "true");
+
+    const imgElement = document.createElement("img");
+    imgElement.setAttribute("src", this.getSrc());
+    element.appendChild(imgElement);
+
+    return { element };
+  }
+
+  static importJSON(serializedNode) {
+    const { src } = serializedNode;
+    return $createImageNode(src).updateFromJSON(serializedNode);
+  }
+
+  exportJSON() {
+    return {
+      ...super.exportJSON(),
+      src: this.getSrc(),
+    };
+  }
+
   select() {
     const nodeSelection = $createNodeSelection();
     nodeSelection.add(this.getKey());
@@ -52,6 +84,17 @@ export class ImageNode extends DecoratorNode {
   decorate() {
     return <img src={this.getSrc()} />;
   }
+}
+
+function $convertImageElement(element) {
+  let node = null;
+  if (element.getAttribute("data-lexical-image-container") === "true") {
+    const imgElement = element.querySelector("img");
+    const src = imgElement.getAttribute("src");
+    node = $createImageNode(src);
+  }
+
+  return { node };
 }
 
 export function $createImageNode(src) {

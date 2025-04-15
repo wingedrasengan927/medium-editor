@@ -1,5 +1,6 @@
 import { DecoratorNode, $applyNodeReplacement } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
+import { renderToString } from "react-dom/server";
 
 function SVGDot() {
   const dotSize = 6;
@@ -46,6 +47,45 @@ export class HorizontalDividerNode extends DecoratorNode {
     return false;
   }
 
+  static importDOM() {
+    return {
+      div: (node) => ({
+        conversion: $convertHorizontalDividerElement,
+        priority: 1,
+      }),
+    };
+  }
+
+  exportDOM(editor) {
+    const { element } = super.exportDOM(editor);
+    element.setAttribute("data-lexical-horizontal-divider", "true");
+
+    // post-processing function
+    const after = (element) => {
+      const dotsComponent = (
+        <>
+          <SVGDot />
+          <SVGDot />
+          <SVGDot />
+        </>
+      );
+      const dotsHTML = renderToString(dotsComponent);
+      element.innerHTML = dotsHTML;
+
+      return element;
+    };
+
+    return { after, element };
+  }
+
+  static importJSON(serializedNode) {
+    return $createHorizontalDividerNode().updateFromJSON(serializedNode);
+  }
+
+  exportJSON() {
+    return super.exportJSON();
+  }
+
   decorate() {
     return (
       <>
@@ -55,6 +95,15 @@ export class HorizontalDividerNode extends DecoratorNode {
       </>
     );
   }
+}
+
+function $convertHorizontalDividerElement(element) {
+  let node = null;
+  if (element.getAttribute("data-lexical-horizontal-divider") === "true") {
+    node = $createHorizontalDividerNode();
+  }
+
+  return { node };
 }
 
 export function $createHorizontalDividerNode() {
