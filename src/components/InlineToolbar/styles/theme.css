@@ -82,13 +82,13 @@
   --link-color-pressed-dark: var(--purple-600-dark);
   --border-color-dark: var(--gray-300-dark);
   --border-color-hover-dark: var(--gray-400-dark);
-  --border-color-pressed-dark: var(--gray-400-dark);
+  --border-color-pressed-dark: var(--gray-50-dark);
   --border-color-disabled-dark: var(--gray-100-dark);
   --field-background-dark: var(--gray-50-dark);
   --field-text-color-dark: var(--gray-600-dark);
   --overlay-background-dark: var(--gray-50-dark);
   --button-background-dark: var(--gray-50-dark);
-  --button-background-pressed-dark: var(--background-color-dark);
+  --button-background-pressed-dark: var(--gray-100-dark);
   /* these colors are the same between light and dark themes
    * to ensure contrast with the foreground color */
   --highlight-background: #6f46ed; /* purple-300 from dark theme, 3.03:1 against background-color */

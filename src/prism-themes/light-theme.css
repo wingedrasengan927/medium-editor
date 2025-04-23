@@ -11,7 +11,11 @@
   box-sizing: border-box;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  tab-size: 4;
+  tab-size: 2;
+  -moz-tab-size: 2;
+  -o-tab-size: 2;
+  white-space: pre;
+  overflow-wrap: normal;
 }
 
 .code-block:before {
