@@ -1,7 +1,7 @@
 {
   "name": "@wingedrasengan927/medium-editor",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "module": "./dist-lib/index.es.js",
   "main": "./dist-lib/index.es.js",
@@ -23,15 +23,14 @@
     "lint": "eslint .",
     "preview": "vite preview --outDir dist-app"
   },
-  "dependencies": {},
   "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
-    "lexical": "^0.30.0",
     "@lexical/react": "^0.30.0",
-    "react-aria-components": "^1.8.0",
     "@tabler/icons-react": "^3.31.0",
-    "better-react-mathjax": "^2.3.0"
+    "better-react-mathjax": "^2.3.0",
+    "lexical": "^0.30.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-aria-components": "^1.8.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -43,7 +42,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
-    "vite": "^6.3.2"
+    "vite": "^6.3.2",
+    "vite-plugin-libcss": "^1.1.1"
   },
   "publishConfig": {
     "@wingedrasengan927:registry": "https://npm.pkg.github.com"

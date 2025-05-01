@@ -2,11 +2,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import libCss from "vite-plugin-libcss";
 
 export default defineConfig(({ mode }) => {
   if (mode === "lib") {
     return {
-      plugins: [react()],
+      plugins: [react(), libCss()],
       build: {
         outDir: path.resolve(__dirname, "dist-lib"),
         lib: {
