@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
         },
         sourcemap: true,
         emptyOutDir: true,
+        cssCodeSplit: false,
       },
     };
   } else if (mode === "app") {
