@@ -17,8 +17,6 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { EditorExposePlugin } from "./Plugins/EditorExposePlugin.jsx";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 
-import "./editor-styles.css";
-
 export default function Editor({ initialConfig, onChange, editorRef }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>

@@ -1,22 +1,37 @@
 {
-  "name": "medium-editor",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@wingedrasengan927/medium-editor",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "module": "./dist-lib/index.es.js",
+  "main": "./dist-lib/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist-lib/index.es.js"
+    },
+    "./config": {
+      "import": "./dist-lib/editorConfig.es.js"
+    }
+  },
+  "files": [
+    "dist-lib"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build:app": "vite build --mode app",
+    "build:lib": "vite build --mode lib",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --outDir dist-app"
   },
-  "dependencies": {
-    "@lexical/react": "^0.30.0",
-    "@tabler/icons-react": "^3.31.0",
-    "better-react-mathjax": "^2.3.0",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
     "lexical": "^0.30.0",
-    "react": "^19.1.0",
+    "@lexical/react": "^0.30.0",
     "react-aria-components": "^1.8.0",
-    "react-dom": "^19.1.0"
+    "@tabler/icons-react": "^3.31.0",
+    "better-react-mathjax": "^2.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -29,5 +44,8 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "vite": "^6.3.2"
+  },
+  "publishConfig": {
+    "@wingedrasengan927:registry": "https://npm.pkg.github.com"
   }
 }

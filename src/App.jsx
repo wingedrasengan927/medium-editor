@@ -8,6 +8,7 @@ import { $getRoot } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
 
 import "./App.css";
+import "./editor-styles.css";
 
 function Navbar({ onCopyHTML, onCopyJSON, onCopyText }) {
   return (
