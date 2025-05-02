@@ -139,13 +139,13 @@
 
 .medium-ol,
 .medium-ul {
-  padding-left: 0px;
-  list-style-position: inside;
+  padding-left: 36px;
+  list-style-position: outside;
 }
 
 .medium-listitem .medium-ol,
 .medium-listitem .medium-ul {
-  padding-left: 30px;
+  padding-left: 24px;
 }
 
 .medium-listitem::marker {
