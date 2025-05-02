@@ -10,8 +10,6 @@ import { HorizontalDividerNode } from "./nodes/HorizontalDividerNode";
 import { ImageNode } from "./nodes/ImageNode";
 import { ListItemNode, ListNode } from "@lexical/list";
 
-import initialEditorState from "./assets/initial_editor_state.json";
-
 const theme = {
   heading: {
     h1: "medium-h1",
@@ -81,7 +79,6 @@ function onError(error) {
 }
 
 export const initialConfig = {
-  editorState: JSON.stringify(initialEditorState),
   namespace: "MyEditor",
   theme,
   onError,
