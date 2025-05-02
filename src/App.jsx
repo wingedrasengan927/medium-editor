@@ -6,8 +6,10 @@ import { Button, Link } from "react-aria-components";
 import { useRef } from "react";
 import { $getRoot } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
+import initialEditorState from "./assets/initial_editor_state.json";
 
 import "./App.css";
+import "./editor-styles.css";
 
 function Navbar({ onCopyHTML, onCopyJSON, onCopyText }) {
   return (
@@ -76,6 +78,8 @@ function App() {
       });
     }
   };
+
+  initialConfig.editorState = JSON.stringify(initialEditorState);
 
   return (
     <div className="app-container">
