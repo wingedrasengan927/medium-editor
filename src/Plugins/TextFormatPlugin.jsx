@@ -124,6 +124,12 @@ function HeadingPlugin() {
     return unregisterListener;
   }, [editor]);
 
+  return null;
+}
+
+function HeadingOneFirstPlugin() {
+  const [editor] = useLexicalComposerContext();
+
   // Effect for NodeTransform: H2 at start -> H1
   useEffect(() => {
     const unregisterTransform = editor.registerNodeTransform(
@@ -287,10 +293,11 @@ function AdjacentHeadingPlugin() {
   return null;
 }
 
-export function TextFormatPlugin() {
+export function TextFormatPlugin({ isHeadingOneFirst }) {
   return (
     <>
       <HeadingPlugin />
+      {isHeadingOneFirst && <HeadingOneFirstPlugin />}
       <QuotePlugin />
       <LinkPlugin />
       <AdjacentHeadingPlugin />

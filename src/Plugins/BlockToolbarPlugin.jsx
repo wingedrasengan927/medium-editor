@@ -17,11 +17,81 @@ const DOM_ELEMENT = document.body;
 export default function BlockToolbarPlugin({ toolbarGap }) {
   const [selectionRectCoords, setSelectionRectCoords] = useState(null);
   const [editor] = useLexicalComposerContext();
+  const [isEditorFocused, setIsEditorFocused] = useState(false);
+  const [toolbarActive, setToolbarActive] = useState(false);
+
+  const handleFocus = () => setIsEditorFocused(true);
+  const handleBlur = (event) => {
+    // Delay the blur event to give time for toolbar click to register
+    setTimeout(() => {
+      const toolbarTrigger = document.getElementById("block-toolbar-trigger");
+      if (
+        toolbarTrigger &&
+        (toolbarTrigger === document.activeElement ||
+          toolbarTrigger.contains(document.activeElement) ||
+          toolbarTrigger.contains(event.relatedTarget))
+      ) {
+        // Don't update focus state if we're clicking on the toolbar trigger
+        return;
+      }
+      setIsEditorFocused(false);
+    }, 100);
+  };
+
+  // Add observer to detect if toolbar is active
+  useEffect(() => {
+    const checkToolbarPresence = () => {
+      const isPresent = !!document.getElementById("block-toolbar-popover");
+      setToolbarActive(isPresent);
+    };
+
+    const observer = new MutationObserver(checkToolbarPresence);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Initial check
+    checkToolbarPresence();
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const unregisterListener = editor.registerRootListener(
+      (rootElement, prevRootElement) => {
+        if (rootElement) {
+          rootElement.addEventListener("focus", handleFocus);
+          rootElement.addEventListener("blur", handleBlur);
+        }
+
+        if (prevRootElement) {
+          prevRootElement.removeEventListener("focus", handleFocus);
+          prevRootElement.removeEventListener("blur", handleBlur);
+        }
+      }
+    );
+
+    return unregisterListener;
+  }, [editor]);
 
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
+        // Check editor focus state during selection changes
+        const rootElement = editor.getRootElement();
+        if (rootElement) {
+          const hasFocus =
+            rootElement === document.activeElement ||
+            rootElement.contains(document.activeElement);
+
+          // Update focus state only if it changed to avoid re-renders
+          if (hasFocus !== isEditorFocused) {
+            setIsEditorFocused(hasFocus);
+          }
+        }
+
         const selection = $getSelection();
 
         if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
@@ -53,6 +123,7 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
 
   return (
     selectionRectCoords &&
+    (isEditorFocused || toolbarActive) &&
     createPortal(
       <BlockToolbarPopover
         selectionRectCoords={selectionRectCoords}

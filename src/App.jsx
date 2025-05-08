@@ -107,6 +107,7 @@ function App() {
             onChange={handleOnChange}
             editorRef={editorRef}
             blockToolbarGap={12}
+            isHeadingOneFirst={true}
             spellCheck={false}
           />
         </div>

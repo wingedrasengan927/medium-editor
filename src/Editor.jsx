@@ -23,6 +23,7 @@ export default function Editor({
   editorRef,
   blockToolbarGap,
   spellCheck,
+  isHeadingOneFirst,
 }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -32,7 +33,7 @@ export default function Editor({
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
-      <TextFormatPlugin />
+      <TextFormatPlugin isHeadingOneFirst={isHeadingOneFirst} />
       <InlineToolbarPlugin />
       <BlockToolbarPlugin toolbarGap={blockToolbarGap} />
       <AutoFocusPlugin />

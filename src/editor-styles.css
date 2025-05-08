@@ -1,6 +1,14 @@
 @import "./font-styles.css";
 @import "./prism-themes/light-theme.css";
 
+:root {
+  --editor-margin-top: 12px;
+}
+
+.medium-paragraph {
+  margin-top: var(--editor-margin-top);
+}
+
 .editor-input {
   min-height: 256px;
   padding: 16px;
@@ -125,6 +133,7 @@
   display: block;
   width: 100%;
   margin: 16px 0;
+  margin-top: var(--editor-margin-top);
 }
 
 .medium-img img {
