@@ -9,6 +9,11 @@
   outline: none;
   font-family: "merriweather", sans-serif;
   color: var(--text-color-light);
+  width: 100%;
+}
+
+.editor-paragraph {
+  margin-top: 6px;
 }
 
 .medium-bold {

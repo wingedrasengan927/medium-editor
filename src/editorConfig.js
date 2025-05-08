@@ -11,6 +11,7 @@ import { ImageNode } from "./nodes/ImageNode";
 import { ListItemNode, ListNode } from "@lexical/list";
 
 const theme = {
+  paragraph: "medium-paragraph",
   heading: {
     h1: "medium-h1",
     h2: "medium-h2",
