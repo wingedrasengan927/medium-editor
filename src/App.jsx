@@ -106,6 +106,8 @@ function App() {
             initialConfig={initialConfig}
             onChange={handleOnChange}
             editorRef={editorRef}
+            blockToolbarGap={12}
+            spellCheck={false}
           />
         </div>
       </MathJaxContext>

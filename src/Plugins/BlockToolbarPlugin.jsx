@@ -14,7 +14,7 @@ import BlockToolbarPopover from "../components/BlockToolbar/BlockToolbar";
 
 const DOM_ELEMENT = document.body;
 
-export default function BlockToolbarPlugin() {
+export default function BlockToolbarPlugin({ toolbarGap }) {
   const [selectionRectCoords, setSelectionRectCoords] = useState(null);
   const [editor] = useLexicalComposerContext();
 
@@ -54,7 +54,10 @@ export default function BlockToolbarPlugin() {
   return (
     selectionRectCoords &&
     createPortal(
-      <BlockToolbarPopover selectionRectCoords={selectionRectCoords} />,
+      <BlockToolbarPopover
+        selectionRectCoords={selectionRectCoords}
+        TOOLBAR_OFFSET={toolbarGap}
+      />,
       DOM_ELEMENT
     )
   );

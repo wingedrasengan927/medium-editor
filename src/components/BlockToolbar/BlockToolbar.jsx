@@ -23,7 +23,6 @@ import { INSERT_IMAGE_COMMAND } from "../../Plugins/ImagePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 const ICON_SIZE = 24;
-const TOOLBAR_OFFSET = 18;
 
 function BlockToolbar() {
   const [editor] = useLexicalComposerContext();
@@ -98,7 +97,10 @@ function BlockToolbar() {
   );
 }
 
-export default function BlockToolbarPopover({ selectionRectCoords }) {
+export default function BlockToolbarPopover({
+  selectionRectCoords,
+  TOOLBAR_OFFSET,
+}) {
   const [toolbarPosition, setToolbarPosition] = useState({
     x: OFFSCREEN_POSITION,
     y: OFFSCREEN_POSITION,

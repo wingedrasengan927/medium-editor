@@ -17,16 +17,24 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { EditorExposePlugin } from "./Plugins/EditorExposePlugin.jsx";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 
-export default function Editor({ initialConfig, onChange, editorRef }) {
+export default function Editor({
+  initialConfig,
+  onChange,
+  editorRef,
+  blockToolbarGap,
+  spellCheck,
+}) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <RichTextPlugin
-        contentEditable={<ContentEditable className="editor-input" />}
+        contentEditable={
+          <ContentEditable spellCheck={spellCheck} className="editor-input" />
+        }
         ErrorBoundary={LexicalErrorBoundary}
       />
       <TextFormatPlugin />
       <InlineToolbarPlugin />
-      <BlockToolbarPlugin />
+      <BlockToolbarPlugin toolbarGap={blockToolbarGap} />
       <AutoFocusPlugin />
       <HistoryPlugin />
       <MathPlugin />
