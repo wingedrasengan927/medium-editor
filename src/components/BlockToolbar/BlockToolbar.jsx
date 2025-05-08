@@ -100,6 +100,8 @@ function BlockToolbar() {
 export default function BlockToolbarPopover({
   selectionRectCoords,
   TOOLBAR_OFFSET,
+  toolbarTriggerId,
+  toolbarPopoverId,
 }) {
   const [toolbarPosition, setToolbarPosition] = useState({
     x: OFFSCREEN_POSITION,
@@ -122,7 +124,8 @@ export default function BlockToolbarPopover({
     <DialogTrigger>
       <Button
         aria-label="Block toolbar trigger"
-        id="block-toolbar-trigger"
+        className="block-toolbar-trigger"
+        id={toolbarTriggerId}
         ref={toolbarRef}
         style={{
           position: "absolute",
@@ -133,7 +136,8 @@ export default function BlockToolbarPopover({
         <IconPlus size={ICON_SIZE} />
       </Button>
       <Popover
-        id="block-toolbar-popover"
+        className="block-toolbar-popover"
+        id={toolbarPopoverId}
         placement="end"
         shouldFlip={false}
         offset={TOOLBAR_OFFSET}

@@ -6,7 +6,7 @@ import {
   COMMAND_PRIORITY_HIGH,
   $isParagraphNode,
 } from "lexical";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { getSelectedNode } from "./TextFormatPlugin";
 
@@ -20,11 +20,16 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
   const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [toolbarActive, setToolbarActive] = useState(false);
 
+  // Generate unique IDs specific to this editor instance
+  const randomStringRef = useRef(Math.random().toString(36).substring(2, 9));
+  const toolbarTriggerId = `block-toolbar-trigger-${randomStringRef.current}`;
+  const toolbarPopoverId = `block-toolbar-popover-${randomStringRef.current}`;
+
   const handleFocus = () => setIsEditorFocused(true);
   const handleBlur = (event) => {
     // Delay the blur event to give time for toolbar click to register
     setTimeout(() => {
-      const toolbarTrigger = document.getElementById("block-toolbar-trigger");
+      const toolbarTrigger = document.getElementById(toolbarTriggerId);
       if (
         toolbarTrigger &&
         (toolbarTrigger === document.activeElement ||
@@ -35,13 +40,13 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
         return;
       }
       setIsEditorFocused(false);
-    }, 100);
+    }, 10);
   };
 
   // Add observer to detect if toolbar is active
   useEffect(() => {
     const checkToolbarPresence = () => {
-      const isPresent = !!document.getElementById("block-toolbar-popover");
+      const isPresent = !!document.getElementById(toolbarPopoverId);
       setToolbarActive(isPresent);
     };
 
@@ -128,6 +133,8 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
       <BlockToolbarPopover
         selectionRectCoords={selectionRectCoords}
         TOOLBAR_OFFSET={toolbarGap}
+        toolbarTriggerId={toolbarTriggerId}
+        toolbarPopoverId={toolbarPopoverId}
       />,
       DOM_ELEMENT
     )

@@ -1,4 +1,4 @@
-.react-aria-Button#block-toolbar-trigger {
+.block-toolbar-trigger {
   display: flex;
   color: var(--text-color-light);
   background: var(--button-background-light);
