@@ -16,6 +16,7 @@ import { TabInterceptorPlugin } from "./Plugins/TabInterceptorPlugin.jsx";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { EditorExposePlugin } from "./Plugins/EditorExposePlugin.jsx";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 
 export default function Editor({
   initialConfig,
@@ -47,6 +48,7 @@ export default function Editor({
       <TabInterceptorPlugin />
       <OnChangePlugin onChange={onChange} />
       <EditorExposePlugin editorRef={editorRef} />
+      <ClearEditorPlugin />
     </LexicalComposer>
   );
 }
