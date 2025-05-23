@@ -45,9 +45,10 @@ export class MathHighlightNodeInline extends TextNode {
   exportDOM(editor) {
     // Export as a MathNode
     const element = document.createElement("span");
-    addClassNamesToElement(element, editor._config.theme.math.rendered);
+    addClassNamesToElement(element, editor._config.theme.math.renderedInline);
     element.textContent = this.getTextContent();
     element.setAttribute("data-lexical-math", "true");
+    element.setAttribute("data-math-inline", "true");
     return { element };
   }
 
@@ -84,7 +85,7 @@ export class MathHighlightNodeBlock extends ElementNode {
   }
 
   createDOM(config) {
-    const element = document.createElement("div");
+    const element = document.createElement("span");
     addClassNamesToElement(element, config.theme.math.highlightBlock);
     return element;
   }
@@ -107,10 +108,11 @@ export class MathHighlightNodeBlock extends ElementNode {
   }
 
   exportDOM(editor) {
-    const element = document.createElement("div");
-    addClassNamesToElement(element, editor._config.theme.math.rendered);
+    const element = document.createElement("span");
+    addClassNamesToElement(element, editor._config.theme.math.renderedBlock);
     element.textContent = this.getTextContent();
     element.setAttribute("data-lexical-math", "true");
+    element.setAttribute("data-math-inline", "false");
     return { element };
   }
 
