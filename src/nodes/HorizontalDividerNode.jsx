@@ -49,10 +49,15 @@ export class HorizontalDividerNode extends DecoratorNode {
 
   static importDOM() {
     return {
-      div: (node) => ({
-        conversion: $convertHorizontalDividerElement,
-        priority: 1,
-      }),
+      div: (node) => {
+        if (node.getAttribute("data-lexical-horizontal-divider") === "true") {
+          return {
+            conversion: $convertHorizontalDividerElement,
+            priority: 2,
+          };
+        }
+        return null;
+      },
     };
   }
 
@@ -102,7 +107,6 @@ function $convertHorizontalDividerElement(element) {
   if (element.getAttribute("data-lexical-horizontal-divider") === "true") {
     node = $createHorizontalDividerNode();
   }
-
   return { node };
 }
 
