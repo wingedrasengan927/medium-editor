@@ -43,8 +43,12 @@ export class MathNode extends DecoratorNode {
   }
 
   createDOM(config) {
-    const element = document.createElement(this.__inline ? "span" : "div");
-    addClassNamesToElement(element, config.theme.math.rendered);
+    const element = document.createElement("span");
+    if (this.__inline) {
+      addClassNamesToElement(element, config.theme.math.renderedInline);
+    } else {
+      addClassNamesToElement(element, config.theme.math.renderedBlock);
+    }
     return element;
   }
 
@@ -58,10 +62,6 @@ export class MathNode extends DecoratorNode {
         conversion: $convertMathElement,
         priority: 1,
       }),
-      div: (node) => ({
-        conversion: $convertMathElement,
-        priority: 1,
-      }),
     };
   }
 
@@ -69,6 +69,7 @@ export class MathNode extends DecoratorNode {
     const { element } = super.exportDOM(editor); // calls the createDOM method
     element.textContent = this.getEquation();
     element.setAttribute("data-lexical-math", "true");
+    element.setAttribute("data-math-inline", this.__inline.toString());
     return { element };
   }
 
@@ -91,11 +92,11 @@ export class MathNode extends DecoratorNode {
 }
 
 function $convertMathElement(element) {
-  const nodeName = element.nodeName.toLowerCase();
   let node = null;
   if (element.getAttribute("data-lexical-math") === "true") {
     const equation = element.textContent;
-    const inline = nodeName === "span";
+    const inlineAttr = element.getAttribute("data-math-inline");
+    const inline = inlineAttr === "true";
     node = $createMathNode(equation, inline);
   }
 

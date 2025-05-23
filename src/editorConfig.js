@@ -26,7 +26,8 @@ const theme = {
   link: "medium-link",
   divider: "medium-divider",
   math: {
-    rendered: "math-rendered",
+    renderedInline: "math-rendered-inline",
+    renderedBlock: "math-rendered-block",
     highlightInline: "math-highlight-inline",
     highlightBlock: "math-highlight-block",
   },
