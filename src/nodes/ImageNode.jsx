@@ -21,7 +21,7 @@ export class ImageNode extends DecoratorNode {
   }
 
   createDOM(config) {
-    const element = document.createElement("div");
+    const element = document.createElement("figure");
     addClassNamesToElement(element, config.theme.img);
     return element;
   }
@@ -32,7 +32,7 @@ export class ImageNode extends DecoratorNode {
 
   static importDOM() {
     return {
-      div: (node) => ({
+      figure: (node) => ({
         conversion: $convertImageElement,
         priority: 1,
       }),
