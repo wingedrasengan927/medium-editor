@@ -47,6 +47,19 @@ export class ImageNode extends DecoratorNode {
     imgElement.setAttribute("src", this.getSrc());
     element.appendChild(imgElement);
 
+    // add existing attributes
+    const currentElement = editor.getElementByKey(this.getKey());
+    if (currentElement) {
+      const currentImgElement = currentElement.querySelector("img");
+      if (currentImgElement) {
+        for (const attr of currentImgElement.attributes) {
+          if (attr.name !== "src") {
+            imgElement.setAttribute(attr.name, attr.value);
+          }
+        }
+      }
+    }
+
     return { element };
   }
 
