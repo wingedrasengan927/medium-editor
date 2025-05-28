@@ -18,6 +18,7 @@ export class ImageNode extends DecoratorNode {
   constructor(src, key) {
     super(key);
     this.__src = src;
+    this.__attributes = {};
   }
 
   createDOM(config) {
@@ -45,21 +46,13 @@ export class ImageNode extends DecoratorNode {
 
     const imgElement = document.createElement("img");
     imgElement.setAttribute("src", this.getSrc());
-    element.appendChild(imgElement);
 
-    // add existing attributes
-    const currentElement = editor.getElementByKey(this.getKey());
-    if (currentElement) {
-      const currentImgElement = currentElement.querySelector("img");
-      if (currentImgElement) {
-        for (const attr of currentImgElement.attributes) {
-          if (attr.name !== "src") {
-            imgElement.setAttribute(attr.name, attr.value);
-          }
-        }
-      }
+    // Apply stored attributes
+    for (const [name, value] of Object.entries(this.__attributes)) {
+      imgElement.setAttribute(name, value);
     }
 
+    element.appendChild(imgElement);
     return { element };
   }
 
@@ -95,7 +88,8 @@ export class ImageNode extends DecoratorNode {
   }
 
   decorate() {
-    return <img src={this.getSrc()} />;
+    const props = { src: this.getSrc(), ...this.__attributes };
+    return <img {...props} />;
   }
 }
 
@@ -105,6 +99,13 @@ function $convertImageElement(element) {
     const imgElement = element.querySelector("img");
     const src = imgElement.getAttribute("src");
     node = $createImageNode(src);
+
+    // Store attributes
+    for (const attr of imgElement.attributes) {
+      if (attr.name !== "src") {
+        node.__attributes[attr.name] = attr.value;
+      }
+    }
   }
 
   return { node };
