@@ -1,11 +1,5 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# An Open Source Medium clone built with Lexical.
+Please refer to the guide for more [details](https://medium-editor-lmr5y.ondigitalocean.app/).
 
 ## Installation
 
@@ -35,7 +29,7 @@ You need to tell npm where to find the packages associated with the `@wingedrase
 
     This line tells npm that any packages under the `@wingedrasengan927` scope should be fetched from GitHub Packages.
 
-### 3. Log into npm (Optional but Recommended)
+### 3. Log into npm
 
 While configuring the `.npmrc` file with the registry is often sufficient for public packages, or if your PAT is passed via environment variables during CI/CD, you might need to explicitly log in for local development, especially for private packages.
 
