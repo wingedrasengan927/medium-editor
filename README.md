@@ -1,5 +1,5 @@
 # An Open Source Medium clone built with Lexical.
-Please refer to the [guide]((https://medium-editor-lmr5y.ondigitalocean.app/)) for more details.
+Please refer to the [guide](https://medium-editor-lmr5y.ondigitalocean.app/) for more details.
 
 ## Installation
 
