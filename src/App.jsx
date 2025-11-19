@@ -1,6 +1,5 @@
 import Editor from "./Editor";
-import { MathJaxContext } from "better-react-mathjax";
-import { INLINE_DELIMITERS, DISPLAY_DELIMITERS } from "./Plugins/MathPlugin";
+
 import { initialConfig } from "./editorConfig.js";
 import { Button, Link } from "react-aria-components";
 import { useRef } from "react";
@@ -88,30 +87,16 @@ function App() {
         onCopyJSON={handleCopyJSON}
         onCopyText={handleCopyText}
       />
-      <MathJaxContext
-        config={{
-          tex: {
-            inlineMath: INLINE_DELIMITERS,
-            displayMath: DISPLAY_DELIMITERS,
-            noundefined: {
-              color: "red",
-              background: "",
-              size: "",
-            },
-          },
-        }}
-      >
-        <div className="editor-wrapper">
-          <Editor
-            initialConfig={initialConfig}
-            onChange={handleOnChange}
-            editorRef={editorRef}
-            blockToolbarGap={12}
-            isHeadingOneFirst={true}
-            spellCheck={false}
-          />
-        </div>
-      </MathJaxContext>
+      <div className="editor-wrapper">
+        <Editor
+          initialConfig={initialConfig}
+          onChange={handleOnChange}
+          editorRef={editorRef}
+          blockToolbarGap={12}
+          isHeadingOneFirst={true}
+          spellCheck={false}
+        />
+      </div>
     </div>
   );
 }

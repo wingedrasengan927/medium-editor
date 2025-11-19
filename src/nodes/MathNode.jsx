@@ -5,7 +5,7 @@ import {
   $setSelection,
 } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
-import { MathJax } from "better-react-mathjax";
+import MathJaxRenderer from "../components/MathJaxRenderer";
 
 export class MathNode extends DecoratorNode {
   static getType() {
@@ -87,7 +87,7 @@ export class MathNode extends DecoratorNode {
   }
 
   decorate() {
-    return <MathJax inline={this.__inline}>{this.__equation}</MathJax>;
+    return <MathJaxRenderer inline={this.__inline}>{this.__equation}</MathJaxRenderer>;
   }
 }
 
