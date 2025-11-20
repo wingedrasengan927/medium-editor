@@ -102,6 +102,15 @@
   margin-right: 2px;
 }
 
+.math-highlight-inline::before,
+.math-highlight-inline::after {
+  content: "$";
+  color: #b0b0b0;
+  /* Make them unselectable/uneditable in appearance */
+  pointer-events: none;
+  user-select: none;
+}
+
 .math-rendered-inline,
 .math-rendered-block {
   cursor: pointer;
@@ -174,30 +183,32 @@
 
 .medium-listitem:has(> .medium-ol),
 .medium-listitem:has(> .medium-ul) {
-  list-style-type: none; /* Hide the marker (bullet/number) */
+  list-style-type: none;
+  /* Hide the marker (bullet/number) */
 }
 
 /* Nesting level specific markers */
 .medium-ol {
-  list-style-type: decimal; /* Default: 1, 2, 3 */
+  list-style-type: decimal;
+  /* Default: 1, 2, 3 */
 }
 
-.medium-listitem > .medium-ol {
-  list-style-type: lower-alpha; /* a, b, c */
+.medium-listitem>.medium-ol {
+  list-style-type: lower-alpha;
+  /* a, b, c */
 }
 
-.medium-listitem .medium-listitem > .medium-ol {
-  list-style-type: lower-roman; /* i, ii, iii */
+.medium-listitem .medium-listitem>.medium-ol {
+  list-style-type: lower-roman;
+  /* i, ii, iii */
 }
 
-.medium-listitem .medium-listitem .medium-listitem > .medium-ol {
-  list-style-type: upper-alpha; /* A, B, C */
+.medium-listitem .medium-listitem .medium-listitem>.medium-ol {
+  list-style-type: upper-alpha;
+  /* A, B, C */
 }
 
-.medium-listitem
-  .medium-listitem
-  .medium-listitem
-  .medium-listitem
-  > .medium-ol {
-  list-style-type: upper-roman; /* I, II, III */
+.medium-listitem .medium-listitem .medium-listitem .medium-listitem>.medium-ol {
+  list-style-type: upper-roman;
+  /* I, II, III */
 }

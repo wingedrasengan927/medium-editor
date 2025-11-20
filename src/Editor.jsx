@@ -6,7 +6,7 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import InlineToolbarPlugin from "./Plugins/InlineToolbarPlugin.jsx";
 import { TextFormatPlugin } from "./Plugins/TextFormatPlugin.jsx";
 import BlockToolbarPlugin from "./Plugins/BlockToolbarPlugin.jsx";
-import { MathPlugin } from "./Plugins/MathPlugin.jsx";
+import { MathInlinePlugin, MathBlockPlugin } from "./Plugins/MathPlugin.jsx";
 import { CodePlugin } from "./Plugins/CodePlugin.jsx";
 import { HorizontalDividerPlugin } from "./Plugins/HorizontalDividerPlugin.jsx";
 import { ImagePlugin } from "./Plugins/ImagePlugin.jsx";
@@ -39,7 +39,8 @@ export default function Editor({
       <BlockToolbarPlugin toolbarGap={blockToolbarGap} />
       <AutoFocusPlugin />
       <HistoryPlugin />
-      <MathPlugin />
+      <MathInlinePlugin />
+      <MathBlockPlugin />
       <CodePlugin />
       <HorizontalDividerPlugin />
       <ImagePlugin />

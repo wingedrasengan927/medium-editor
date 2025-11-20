@@ -51,14 +51,6 @@ export class MathHighlightNodeInline extends TextNode {
     element.setAttribute("data-math-inline", "true");
     return { element };
   }
-
-  canInsertTextAfter() {
-    return false;
-  }
-
-  canInsertTextBefore() {
-    return false;
-  }
 }
 
 export function $createMathHighlightNodeInline(equation) {
