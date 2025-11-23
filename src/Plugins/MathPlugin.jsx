@@ -9,6 +9,7 @@ import {
   $isNodeSelection,
   $isRangeSelection,
   $isTextNode,
+  $isParagraphNode,
   COMMAND_PRIORITY_HIGH,
   KEY_ENTER_COMMAND,
   KEY_ARROW_RIGHT_COMMAND,
@@ -156,12 +157,21 @@ export function MathInlinePlugin() {
             $isMathHighlightNodeInline(node) &&
             !nodesToExclude.has(node.getKey())
           ) {
-            const equation = node.getTextContent();
+            let equation = node.getTextContent();
             if (!equation) {
               node.remove();
               return;
             }
-            const mathNode = $createMathNode(`$${equation}$`, true);
+
+            let isBlock = false;
+            if (equation.startsWith("$") && equation.endsWith("$") && equation.length >= 2) {
+              equation = equation.slice(1, -1);
+              isBlock = true;
+            }
+
+            const mathNode = isBlock
+              ? $createMathNode(`$$${equation}$$`, false)
+              : $createMathNode(`$${equation}$`, true);
             node.replace(mathNode);
           }
         });
@@ -280,6 +290,39 @@ export function MathBlockPlugin() {
       }
 
       const text = node.getTextContent();
+
+      // Check for Block Creation Trigger: "$$ " at start of line/paragraph
+      if (text.startsWith("$$ ")) {
+        const prevSibling = node.getPreviousSibling();
+        const parentNode = $findMatchingParent(node, $isParagraphNode);
+        const isStartOfParagraph = parentNode !== null && parentNode.getChildrenSize() === 1;
+        const isAfterLineBreak = $isLineBreakNode(prevSibling);
+
+        if (isStartOfParagraph || isAfterLineBreak) {
+          // If there is more text after "$$ ", don't do anything
+          if (text.length > 3) {
+            return;
+          }
+
+          // Create the new math block
+          const mathBlock = $createMathHighlightNodeBlock("");
+
+          // Replace "$$ " with the math block
+          node.replace(mathBlock);
+
+          // Select the math block
+          mathBlock.select();
+
+          // Check if the next sibling is a LineBreakNode and remove it
+          const nextSibling = mathBlock.getNextSibling();
+          if ($isLineBreakNode(nextSibling)) {
+            nextSibling.remove();
+          }
+
+          return;
+        }
+      }
+
       const match = getMatch(text, DISPLAY_DELIMITERS);
 
       if (match) {
@@ -313,19 +356,13 @@ export function MathBlockPlugin() {
           if (nodes.length === 1 && $isMathNode(nodes[0])) {
             const mathNode = nodes[0];
             if (!mathNode.isInline()) {
-              const equation = mathNode.getEquation();
-              // We don't strip delimiters for block math usually, or maybe we do?
-              // The original code didn't strip for block math explicitly in the same way, 
-              // or it relied on `equation` being the full content.
-              // Let's look at the original code:
-              // It checked `isInline` and stripped.
-              // For block, it just created `MathHighlightNodeBlock(equation)`.
-              // So we keep the delimiters for block?
-              // Wait, `validateDelimiters` was used to check validity.
-              // Let's assume we keep delimiters for block to be safe, or consistent with original.
-              // Original: `const mathHighlightNode = isInline ? ... : $createMathHighlightNodeBlock(equation);`
-              // And `equation` was modified ONLY if `isInline`.
-              // So yes, block keeps delimiters.
+              let equation = mathNode.getEquation();
+              // Strip delimiters
+              if (equation.startsWith("$$") && equation.endsWith("$$")) {
+                equation = equation.slice(2, -2);
+              } else if (equation.startsWith("\\[") && equation.endsWith("\\]")) {
+                equation = equation.slice(2, -2);
+              }
 
               const mathHighlightNode = $createMathHighlightNodeBlock(equation);
               mathNode.replace(mathHighlightNode);
@@ -344,12 +381,6 @@ export function MathBlockPlugin() {
         }
 
         // Convert unselected block highlight nodes back to math nodes
-        // We need to iterate.
-        // Since MathHighlightNodeBlock is an ElementNode, we can't use getAllTextNodes to find it directly.
-        // We have to rely on `editor.getEditorState()._nodeMap` or traverse.
-        // The original code used `editor.getEditorState()._nodeMap`.
-
-        // We can use that here too.
         const editorState = editor.getEditorState();
         const allNodes = editorState._nodeMap;
         for (const [, node] of allNodes) {
@@ -360,7 +391,7 @@ export function MathBlockPlugin() {
               continue;
             }
             // Always convert back to block MathNode
-            const mathNode = $createMathNode(equation, false);
+            const mathNode = $createMathNode(`$$${equation}$$`, false);
             node.replace(mathNode);
           }
         }
@@ -418,6 +449,41 @@ export function MathBlockPlugin() {
       COMMAND_PRIORITY_HIGH
     );
     return unregisterListener;
+  }, [editor]);
+
+  // If a collapsed selection lands on a MathNode Block from right upon backspace,
+  // convert it to MathHighlightNodeBlock and select it at the end
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_BACKSPACE_COMMAND,
+      (payload) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+
+        const adjacentNode = $getAdjacentNode(selection.anchor, true);
+
+        if ($isMathNode(adjacentNode) && !adjacentNode.isInline()) {
+          const equation = adjacentNode.getEquation();
+          let cleanEquation = equation;
+          // Strip delimiters if present
+          if (cleanEquation.startsWith("$$") && cleanEquation.endsWith("$$")) {
+            cleanEquation = cleanEquation.slice(2, -2);
+          } else if (cleanEquation.startsWith("\\[") && cleanEquation.endsWith("\\]")) {
+            cleanEquation = cleanEquation.slice(2, -2);
+          }
+
+          const mathHighlightNode = $createMathHighlightNodeBlock(cleanEquation);
+          adjacentNode.replace(mathHighlightNode);
+          mathHighlightNode.select();
+          return true;
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
   }, [editor]);
 
   return (

@@ -131,6 +131,16 @@
   display: block;
 }
 
+.math-highlight-block::before,
+.math-highlight-block::after {
+  content: "$$";
+  color: #b0b0b0;
+  /* Make them unselectable/uneditable in appearance */
+  pointer-events: none;
+  user-select: none;
+  display: block;
+}
+
 .medium-divider {
   width: 100%;
   display: flex;
