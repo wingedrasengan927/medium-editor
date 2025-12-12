@@ -12,6 +12,10 @@ import {
   $getSelection,
   SELECTION_CHANGE_COMMAND,
   $getNodeByKey,
+  KEY_BACKSPACE_COMMAND,
+  TextNode,
+  $isLineBreakNode,
+  $isParagraphNode,
 } from "lexical";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -85,6 +89,51 @@ function CodeBlockPlugin() {
   }, [editor]);
 
   useEffect(() => {
+    const removeTransform = editor.registerNodeTransform(TextNode, (node) => {
+      if (!node.isSimpleText()) {
+        return;
+      }
+
+      const text = node.getTextContent();
+
+      // Check for Code Block Trigger: "``` " at start of line/paragraph
+      if (text.startsWith("``` ")) {
+        const prevSibling = node.getPreviousSibling();
+        const parentNode = $findMatchingParent(node, $isParagraphNode);
+        const isStartOfParagraph =
+          parentNode !== null && parentNode.getChildrenSize() === 1;
+        const isAfterLineBreak = $isLineBreakNode(prevSibling);
+
+        if (isStartOfParagraph || isAfterLineBreak) {
+          // If there is more text after "``` ", don't do anything
+          if (text.length > 4) {
+            return;
+          }
+
+          // Create the new code block
+          const codeNode = $createCodeNode();
+
+          // Replace "``` " with the code block
+          node.replace(codeNode);
+
+          // Select the code block
+          codeNode.select();
+
+          // Check if the next sibling is a LineBreakNode and remove it
+          const nextSibling = codeNode.getNextSibling();
+          if ($isLineBreakNode(nextSibling)) {
+            nextSibling.remove();
+          }
+
+          return;
+        }
+      }
+    });
+
+    return removeTransform;
+  }, [editor]);
+
+  useEffect(() => {
     const unregisterCommand = editor.registerCommand(
       INSERT_CODE_BLOCK_COMMAND,
       () => {
@@ -119,6 +168,38 @@ function CodeBlockPlugin() {
         if ($isCodeNode(codeNode)) {
           codeNode.setLanguage(language);
           return true;
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+
+    return unregisterCommand;
+  }, [editor]);
+
+  useEffect(() => {
+    const unregisterCommand = editor.registerCommand(
+      KEY_BACKSPACE_COMMAND,
+      (payload) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+
+        const node = selection.anchor.getNode();
+        const codeNode = $findMatchingParent(node, $isCodeNode);
+
+        if (codeNode) {
+          // Check if we are at the beginning of the code block
+          if (selection.anchor.offset === 0) {
+            // Check if code block is empty (only has empty text node or line break)
+            const textContent = codeNode.getTextContent();
+            if (textContent === "") {
+              codeNode.remove();
+              return true;
+            }
+          }
         }
 
         return false;
