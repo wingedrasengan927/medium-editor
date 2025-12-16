@@ -20,6 +20,7 @@
     "dev": "vite",
     "build:app": "vite build --mode app",
     "build:lib": "vite build --mode lib",
+    "prepublishOnly": "npm run build:lib",
     "lint": "eslint .",
     "preview": "vite preview --outDir dist-app"
   },
