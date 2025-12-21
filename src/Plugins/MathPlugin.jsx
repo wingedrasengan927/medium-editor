@@ -15,8 +15,10 @@ import {
   KEY_ARROW_RIGHT_COMMAND,
   KEY_BACKSPACE_COMMAND,
   SELECTION_CHANGE_COMMAND,
+  $createTextNode,
   TextNode,
-  $getAdjacentNode
+  $getAdjacentNode,
+  COMMAND_PRIORITY_NORMAL
 } from "lexical";
 import {
   $createMathHighlightNodeBlock,
@@ -250,6 +252,32 @@ export function MathInlinePlugin() {
         return false;
       },
       COMMAND_PRIORITY_HIGH
+    );
+  }, [editor]);
+
+  // If the selection is inside a MathHighlightNodeInline and there is no next sibling,
+  // add a space after it to make it easier to escape
+  useEffect(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+          return false;
+        }
+
+        const node = selection.anchor.getNode();
+
+        if ($isMathHighlightNodeInline(node)) {
+          const nextSibling = node.getNextSibling();
+          if (!nextSibling) {
+            node.insertAfter($createTextNode(" "));
+          }
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_NORMAL
     );
   }, [editor]);
 
