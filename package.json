@@ -1,7 +1,7 @@
 {
   "name": "lexical-medium-editor",
   "private": false,
-  "version": "1.2.4",
+  "version": "1.2.5",
   "type": "module",
   "module": "./dist-lib/index.es.js",
   "main": "./dist-lib/index.es.js",
