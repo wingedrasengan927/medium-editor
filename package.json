@@ -11,8 +11,10 @@
     },
     "./config": {
       "import": "./dist-lib/editorConfig.es.js"
-    }
+    },
+    "./styles.css": "./dist-lib/lexical-medium-editor.css"
   },
+  "style": "./dist-lib/lexical-medium-editor.css",
   "files": [
     "dist-lib"
   ],

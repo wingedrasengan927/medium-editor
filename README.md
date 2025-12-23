@@ -39,6 +39,7 @@ Here is an example of how to use the editor in your project:
 import { useRef } from "react";
 import Editor from "lexical-medium-editor";
 import { initialConfig } from "lexical-medium-editor/config";
+import "lexical-medium-editor/styles.css";
 
 export default function App() {
   const editorRef = useRef(null);
@@ -59,3 +60,6 @@ export default function App() {
   );
 }
 ```
+
+> [!TIP]
+> You can also copy the CSS from `node_modules/lexical-medium-editor/dist-lib/lexical-medium-editor.css` into your own project and modify it to customize the editor's appearance.
