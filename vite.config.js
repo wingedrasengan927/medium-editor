@@ -21,13 +21,15 @@ export default defineConfig(({ mode }) => {
         // Specify external dependencies (these won't be bundled)
         rollupOptions: {
           external: [
-            "react",
-            "react-dom",
-            "lexical",
-            "@lexical/react",
-            "react-aria-components",
-            "@tabler/icons-react",
-            "better-react-mathjax",
+            /^react($|\/)/,
+            /^react-dom($|\/)/,
+            /^lexical($|\/)/,
+            /^@lexical\/react($|\/)/,
+            /^@lexical\//,
+            /^react-aria-components($|\/)/,
+            /^@react-aria\//,
+            /^@react-stately\//,
+            /^@tabler\/icons-react($|\/)/
           ],
           output: {},
         },

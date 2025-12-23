@@ -30,3 +30,32 @@ To install the `lexical-medium-editor` package, run the following command:
 ```bash
 npm install lexical-medium-editor
 ```
+
+## Usage
+
+Here is an example of how to use the editor in your project:
+
+```jsx
+import { useRef } from "react";
+import Editor from "lexical-medium-editor";
+import { initialConfig } from "lexical-medium-editor/config";
+
+export default function App() {
+  const editorRef = useRef(null);
+
+  const handleOnChange = (editorState) => {
+    console.log(editorState);
+  };
+
+  return (
+    <Editor
+      initialConfig={initialConfig}
+      onChange={handleOnChange}
+      editorRef={editorRef}
+      blockToolbarGap={32}
+      isHeadingOneFirst={false}
+      spellCheck={false}
+    />
+  );
+}
+```
