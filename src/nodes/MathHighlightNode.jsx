@@ -131,15 +131,24 @@ export class MathHighlightNodeBlock extends ElementNode {
           anchorNode.getKey() === lastChild.getKey() &&
           selection.anchor.offset === lastChild.getTextContent().length);
       if (isAtBlockEnd) {
-        const parentNode = $findMatchingParent(this, $isParagraphNode);
-        const paragraphNode = $createParagraphNode();
-        if (!parentNode) {
-          this.insertAfter(paragraphNode);
+        // If the last child is a LineBreakNode, it means the user pressed Enter twice (once to create the break, once now).
+        // In this case, we exit the block.
+        if (lastChild && $isLineBreakNode(lastChild)) {
+          lastChild.remove();
+          const parentNode = $findMatchingParent(this, $isParagraphNode);
+          const paragraphNode = $createParagraphNode();
+          if (!parentNode) {
+            this.insertAfter(paragraphNode);
+          } else {
+            parentNode.insertAfter(paragraphNode);
+          }
+          paragraphNode.select();
+          return paragraphNode;
         } else {
-          parentNode.insertAfter(paragraphNode);
+          // Otherwise, we just insert a line break within the block.
+          selection.insertLineBreak();
+          return null;
         }
-        paragraphNode.select();
-        return paragraphNode;
       }
     }
   }
