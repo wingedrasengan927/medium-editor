@@ -8,7 +8,6 @@ import { $generateHtmlFromNodes } from "@lexical/html";
 import initialEditorState from "./assets/initial_editor_state.json";
 
 import "./App.css";
-import "./editor-styles.css";
 
 function Navbar({ onCopyHTML, onCopyJSON, onCopyText }) {
   return (

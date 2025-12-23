@@ -7,6 +7,7 @@ import libCss from "vite-plugin-libcss";
 export default defineConfig(({ mode }) => {
   if (mode === "lib") {
     return {
+      publicDir: false,
       plugins: [react(), libCss()],
       build: {
         outDir: path.resolve(__dirname, "dist-lib"),
