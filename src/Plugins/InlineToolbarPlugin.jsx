@@ -67,11 +67,15 @@ export default function InlineToolbarPlugin() {
       () => {
         setTimeout(() => {
           const toolbar = document.getElementById("inline-toolbar");
+          const linkToolbar = document.getElementById("link-toolbar");
           const activeElement = document.activeElement;
 
           if (
-            toolbar &&
-            (toolbar === activeElement || toolbar.contains(activeElement))
+            (toolbar &&
+              (toolbar === activeElement || toolbar.contains(activeElement))) ||
+            (linkToolbar &&
+              (linkToolbar === activeElement ||
+                linkToolbar.contains(activeElement)))
           ) {
             return;
           }
