@@ -4,6 +4,7 @@ import {
   $isRangeSelection,
   SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_HIGH,
+  BLUR_COMMAND,
 } from "lexical";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -52,6 +53,31 @@ export default function InlineToolbarPlugin() {
         );
 
         setShouldShow(!hasMathNode && !isSingleMathHighlight && !isCodeBlock);
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+    return unregisterListener;
+  }, [editor]);
+
+  // Hide the toolbar when the editor loses focus
+  useEffect(() => {
+    const unregisterListener = editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        setTimeout(() => {
+          const toolbar = document.getElementById("inline-toolbar");
+          const activeElement = document.activeElement;
+
+          if (
+            toolbar &&
+            (toolbar === activeElement || toolbar.contains(activeElement))
+          ) {
+            return;
+          }
+
+          setShouldShow(false);
+        }, 0);
         return false;
       },
       COMMAND_PRIORITY_HIGH
