@@ -20,6 +20,7 @@ import {
   $getAdjacentNode,
   COMMAND_PRIORITY_NORMAL,
   BLUR_COMMAND,
+  $setSelection,
 } from "lexical";
 import {
   $createMathHighlightNodeBlock,
@@ -192,6 +193,7 @@ export function MathInlinePlugin() {
       BLUR_COMMAND,
       () => {
         editor.update(() => {
+          $setSelection(null);
           const root = $getRoot();
           const allTextNodes = root.getAllTextNodes();
 
@@ -478,6 +480,7 @@ export function MathBlockPlugin() {
       BLUR_COMMAND,
       () => {
         editor.update(() => {
+          $setSelection(null);
           const root = $getRoot();
           const nodes = $dfs(root);
 
