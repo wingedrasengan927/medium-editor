@@ -1,4 +1,4 @@
-import { $insertList, $isListItemNode } from "@lexical/list";
+import { $insertList, $isListItemNode, $createListItemNode } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useEffect } from "react";
 import {
@@ -8,6 +8,7 @@ import {
   COMMAND_PRIORITY_HIGH,
   KEY_TAB_COMMAND,
   TextNode,
+  ParagraphNode,
 } from "lexical";
 import { $findMatchingParent } from "@lexical/utils";
 import { getSelectedNode } from "./TextFormatPlugin";
@@ -16,6 +17,29 @@ const MAX_INDENT_LEVEL = 3;
 
 export function ListPluginExtended() {
   const [editor] = useLexicalComposerContext();
+
+  // Transform: Remove paragraph nodes inside list item nodes
+  // Replace with a new list item node
+  useEffect(() => {
+    const removeTransform = editor.registerNodeTransform(
+      ParagraphNode,
+      (paragraphNode) => {
+        const parent = paragraphNode.getParent();
+
+        // Check if paragraph is inside a ListItemNode
+        if ($isListItemNode(parent)) {
+          // Insert a new list item after the parent and remove the paragraph
+          const newListItem = $createListItemNode();
+          parent.insertAfter(newListItem);
+          paragraphNode.remove();
+          // Select the newly inserted list item
+          newListItem.selectStart();
+        }
+      }
+    );
+
+    return removeTransform;
+  }, [editor]);
 
   // If a text node begins with '1. ' or '- ', convert it into a list
   useEffect(() => {
