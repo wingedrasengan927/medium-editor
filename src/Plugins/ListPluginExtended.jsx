@@ -1,10 +1,11 @@
-import { $insertList, $isListItemNode, $createListItemNode } from "@lexical/list";
+import { $insertList, $isListItemNode } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useEffect } from "react";
 import {
   $getSelection,
   $isParagraphNode,
   $isRangeSelection,
+  $createLineBreakNode,
   COMMAND_PRIORITY_HIGH,
   KEY_TAB_COMMAND,
   TextNode,
@@ -19,7 +20,7 @@ export function ListPluginExtended() {
   const [editor] = useLexicalComposerContext();
 
   // Transform: Remove paragraph nodes inside list item nodes
-  // Replace with a new list item node
+  // Replace with a line break node
   useEffect(() => {
     const removeTransform = editor.registerNodeTransform(
       ParagraphNode,
@@ -28,12 +29,8 @@ export function ListPluginExtended() {
 
         // Check if paragraph is inside a ListItemNode
         if ($isListItemNode(parent)) {
-          // Insert a new list item after the parent and remove the paragraph
-          const newListItem = $createListItemNode();
-          parent.insertAfter(newListItem);
-          paragraphNode.remove();
-          // Select the newly inserted list item
-          newListItem.selectStart();
+          // Replace paragraph with a line break
+          paragraphNode.replace($createLineBreakNode());
         }
       }
     );
