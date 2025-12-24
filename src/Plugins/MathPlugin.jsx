@@ -18,7 +18,8 @@ import {
   $createTextNode,
   TextNode,
   $getAdjacentNode,
-  COMMAND_PRIORITY_NORMAL
+  COMMAND_PRIORITY_NORMAL,
+  BLUR_COMMAND,
 } from "lexical";
 import {
   $createMathHighlightNodeBlock,
@@ -29,7 +30,7 @@ import {
   MathHighlightNodeInline,
 } from "../nodes/MathHighlightNode";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
-import { $findMatchingParent } from "@lexical/utils";
+import { $findMatchingParent, $dfs } from "@lexical/utils";
 
 export const INLINE_DELIMITERS = [
   ["$", "$"],
@@ -183,6 +184,46 @@ export function MathInlinePlugin() {
       COMMAND_PRIORITY_HIGH
     );
     return unregisterListener;
+  }, [editor]);
+
+  // Convert MathHighlightNodeInline to MathNode Inline upon blur
+  useEffect(() => {
+    return editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        editor.update(() => {
+          const root = $getRoot();
+          const allTextNodes = root.getAllTextNodes();
+
+          allTextNodes.forEach((node) => {
+            if ($isMathHighlightNodeInline(node)) {
+              let equation = node.getTextContent();
+              if (!equation) {
+                node.remove();
+                return;
+              }
+
+              let isBlock = false;
+              if (
+                equation.startsWith("$") &&
+                equation.endsWith("$") &&
+                equation.length >= 2
+              ) {
+                equation = equation.slice(1, -1);
+                isBlock = true;
+              }
+
+              const mathNode = isBlock
+                ? $createMathNode(`$$${equation}$$`, false)
+                : $createMathNode(`$${equation}$`, true);
+              node.replace(mathNode);
+            }
+          });
+        });
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
   }, [editor]);
 
   // If a collapsed selection lands on a MathNode Inline from left,
@@ -429,6 +470,34 @@ export function MathBlockPlugin() {
       COMMAND_PRIORITY_HIGH
     );
     return unregisterListener;
+  }, [editor]);
+
+  // Convert MathHighlightNodeBlock to MathNode Block upon blur
+  useEffect(() => {
+    return editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        editor.update(() => {
+          const root = $getRoot();
+          const nodes = $dfs(root);
+
+          nodes.forEach(({ node }) => {
+             if ($isMathHighlightNodeBlock(node)) {
+              const equation = node.getTextContent();
+              if (!equation) {
+                node.remove();
+                return;
+              }
+              // Always convert back to block MathNode
+              const mathNode = $createMathNode(`$$${equation}$$`, false);
+              node.replace(mathNode);
+             }
+          });
+        });
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
   }, [editor]);
 
   useEffect(() => {
