@@ -281,67 +281,6 @@ export function MathInlinePlugin() {
     );
   }, [editor]);
 
-  // Handle Blur: Convert all inline highlight nodes back to math nodes
-  useEffect(() => {
-    const handleBlur = (event) => {
-      // Delay to ensure focus has actually left the editor
-      setTimeout(() => {
-        const rootElement = editor.getRootElement();
-        if (
-          rootElement &&
-          (rootElement === document.activeElement ||
-            rootElement.contains(document.activeElement))
-        ) {
-          return;
-        }
-
-        editor.update(() => {
-          const root = $getRoot();
-          const allTextNodes = root.getAllTextNodes();
-
-          allTextNodes.forEach((node) => {
-            if ($isMathHighlightNodeInline(node)) {
-              let equation = node.getTextContent();
-              if (!equation) {
-                node.remove();
-                return;
-              }
-
-              let isBlock = false;
-              if (
-                equation.startsWith("$") &&
-                equation.endsWith("$") &&
-                equation.length >= 2
-              ) {
-                equation = equation.slice(1, -1);
-                isBlock = true;
-              }
-
-              const mathNode = isBlock
-                ? $createMathNode(`$$${equation}$$`, false)
-                : $createMathNode(`$${equation}$`, true);
-              node.replace(mathNode);
-            }
-          });
-        });
-      }, 10);
-    };
-
-    const unregisterListener = editor.registerRootListener(
-      (rootElement, prevRootElement) => {
-        if (rootElement) {
-          rootElement.addEventListener("blur", handleBlur);
-        }
-
-        if (prevRootElement) {
-          prevRootElement.removeEventListener("blur", handleBlur);
-        }
-      }
-    );
-
-    return unregisterListener;
-  }, [editor]);
-
   return (
     // Register click event for MathNode
     <NodeEventPlugin
@@ -573,54 +512,6 @@ export function MathBlockPlugin() {
       },
       COMMAND_PRIORITY_HIGH
     );
-  }, [editor]);
-
-  // Handle Blur: Convert all block highlight nodes back to math nodes
-  useEffect(() => {
-    const handleBlur = (event) => {
-      // Delay to ensure focus has actually left the editor
-      setTimeout(() => {
-        const rootElement = editor.getRootElement();
-        if (
-          rootElement &&
-          (rootElement === document.activeElement ||
-            rootElement.contains(document.activeElement))
-        ) {
-          return;
-        }
-
-        editor.update(() => {
-          const editorState = editor.getEditorState();
-          const allNodes = editorState._nodeMap;
-          for (const [, node] of allNodes) {
-            if ($isMathHighlightNodeBlock(node) && node.isAttached()) {
-              const equation = node.getTextContent();
-              if (!equation) {
-                node.remove();
-                continue;
-              }
-              // Always convert back to block MathNode
-              const mathNode = $createMathNode(`$$${equation}$$`, false);
-              node.replace(mathNode);
-            }
-          }
-        });
-      }, 10);
-    };
-
-    const unregisterListener = editor.registerRootListener(
-      (rootElement, prevRootElement) => {
-        if (rootElement) {
-          rootElement.addEventListener("blur", handleBlur);
-        }
-
-        if (prevRootElement) {
-          prevRootElement.removeEventListener("blur", handleBlur);
-        }
-      }
-    );
-
-    return unregisterListener;
   }, [editor]);
 
   return (
