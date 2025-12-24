@@ -30,7 +30,9 @@ export function ListPluginExtended() {
         // Check if paragraph is inside a ListItemNode
         if ($isListItemNode(parent)) {
           // Replace paragraph with a line break
-          paragraphNode.replace($createLineBreakNode());
+          const lineBreakNode = $createLineBreakNode();
+          paragraphNode.replace(lineBreakNode);
+          lineBreakNode.selectEnd();
         }
       }
     );
