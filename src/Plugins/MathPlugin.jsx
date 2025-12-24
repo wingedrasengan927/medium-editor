@@ -20,6 +20,7 @@ import {
   $getAdjacentNode,
   COMMAND_PRIORITY_NORMAL,
   BLUR_COMMAND,
+  $setSelection,
 } from "lexical";
 import {
   $createMathHighlightNodeBlock,
@@ -217,6 +218,7 @@ export function MathInlinePlugin() {
                 ? $createMathNode(`$$${equation}$$`, false)
                 : $createMathNode(`$${equation}$`, true);
               node.replace(mathNode);
+              $setSelection(null);
             }
           });
         });
@@ -482,7 +484,7 @@ export function MathBlockPlugin() {
           const nodes = $dfs(root);
 
           nodes.forEach(({ node }) => {
-             if ($isMathHighlightNodeBlock(node)) {
+            if ($isMathHighlightNodeBlock(node)) {
               const equation = node.getTextContent();
               if (!equation) {
                 node.remove();
@@ -491,7 +493,8 @@ export function MathBlockPlugin() {
               // Always convert back to block MathNode
               const mathNode = $createMathNode(`$$${equation}$$`, false);
               node.replace(mathNode);
-             }
+              $setSelection(null);
+            }
           });
         });
         return false;
