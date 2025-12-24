@@ -59,51 +59,7 @@ export default function InlineToolbarPlugin() {
     return unregisterListener;
   }, [editor]);
 
-  // Handle Focus/Blur
-  const [isEditorFocused, setIsEditorFocused] = useState(false);
-
-  useEffect(() => {
-    const handleFocus = () => setIsEditorFocused(true);
-    const handleBlur = (event) => {
-      // Delay to check if we clicked on the toolbar
-      setTimeout(() => {
-        const toolbarElement = document.getElementById("inline-toolbar");
-        if (
-          toolbarElement &&
-          (toolbarElement === document.activeElement ||
-            toolbarElement.contains(document.activeElement) ||
-            toolbarElement.contains(event.relatedTarget))
-        ) {
-          return;
-        }
-        setIsEditorFocused(false);
-      }, 10);
-    };
-
-    const unregisterListener = editor.registerRootListener(
-      (rootElement, prevRootElement) => {
-        if (rootElement) {
-          rootElement.addEventListener("focus", handleFocus);
-          rootElement.addEventListener("blur", handleBlur);
-          // Check initial focus
-          if (document.activeElement === rootElement) {
-            setIsEditorFocused(true);
-          }
-        }
-
-        if (prevRootElement) {
-          prevRootElement.removeEventListener("focus", handleFocus);
-          prevRootElement.removeEventListener("blur", handleBlur);
-        }
-      }
-    );
-
-    return unregisterListener;
-  }, [editor]);
-
   return (
-    shouldShow &&
-    isEditorFocused &&
-    createPortal(<InlineToolbar editor={editor} />, DOM_ELEMENT)
+    shouldShow && createPortal(<InlineToolbar editor={editor} />, DOM_ELEMENT)
   );
 }

@@ -108,17 +108,13 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
         if ($isParagraphNode(node) && node.getTextContent() === "") {
           // update selection coordinates when selection changes and the condition is met
           const DOMElement = editor.getElementByKey(node.getKey());
+          const boundingRect = DOMElement.getBoundingClientRect();
 
-          if (DOMElement) {
-            const boundingRect = DOMElement.getBoundingClientRect();
-            const X = boundingRect.left;
-            const centerY =
-              boundingRect.top + boundingRect.height / 2 + window.scrollY;
+          const X = boundingRect.left;
+          const centerY =
+            boundingRect.top + boundingRect.height / 2 + window.scrollY;
 
-            setSelectionRectCoords({ x: X, y: centerY });
-          } else {
-            setSelectionRectCoords(null);
-          }
+          setSelectionRectCoords({ x: X, y: centerY });
         } else {
           setSelectionRectCoords(null);
         }
@@ -128,7 +124,7 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
       COMMAND_PRIORITY_HIGH
     );
     return unregisterListener;
-  }, [editor, isEditorFocused]);
+  }, [editor]);
 
   return (
     selectionRectCoords &&
