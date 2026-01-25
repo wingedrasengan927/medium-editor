@@ -433,7 +433,7 @@
             "format": 0,
             "mode": "normal",
             "style": "",
-            "text": "The editor supports LaTeX rendering using MathJax v3. Create inline math by enclosing expressions within ",
+            "text": "The editor supports LaTeX rendering using MathJax v4. Create inline math by enclosing expressions within ",
             "type": "text",
             "version": 1
           },
@@ -579,7 +579,7 @@
             "format": 0,
             "mode": "normal",
             "style": "",
-            "text": "Currently, MathJax v3 has limitations regarding custom font support and line breaking. It is anticipated that MathJax v4 will resolve these issues. Future plans also include the addition of LaTeX validation functionality to alert users to invalid expressions.",
+            "text": "MathJax v4.1 is now used, resolving previous limitations regarding custom font support and line breaking. Future plans also include the addition of LaTeX validation functionality to alert users to invalid expressions.",
             "type": "text",
             "version": 1
           }
