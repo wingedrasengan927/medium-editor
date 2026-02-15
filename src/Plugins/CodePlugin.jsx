@@ -11,6 +11,7 @@ import {
   createCommand,
   $getSelection,
   SELECTION_CHANGE_COMMAND,
+  BLUR_COMMAND,
   $getNodeByKey,
   KEY_BACKSPACE_COMMAND,
   TextNode,
@@ -35,16 +36,31 @@ export const SET_CODE_LANGUAGE_COMMAND = createCommand(
 function CodeHighlightMenuPlugin() {
   const [codeBlockCoords, setCodeBlockCoords] = useState(null);
   const [codeNodeKey, setCodeNodeKey] = useState(null);
+  const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [editor] = useLexicalComposerContext();
+
+  const hideCodeMenu = () => {
+    setCodeBlockCoords(null);
+    setCodeNodeKey(null);
+  };
 
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
+        const rootElement = editor.getRootElement();
+        if (rootElement) {
+          const hasFocus =
+            rootElement === document.activeElement ||
+            rootElement.contains(document.activeElement);
+
+          setIsEditorFocused((prev) => (prev === hasFocus ? prev : hasFocus));
+        }
+
         const selection = $getSelection();
 
         if (!$isRangeSelection(selection)) {
-          setCodeBlockCoords(null);
+          hideCodeMenu();
           return false;
         }
 
@@ -62,7 +78,7 @@ function CodeHighlightMenuPlugin() {
           setCodeBlockCoords({ x: X, y: Y });
           setCodeNodeKey(codeNode.getKey());
         } else {
-          setCodeBlockCoords(null);
+          hideCodeMenu();
         }
 
         return false;
@@ -72,8 +88,44 @@ function CodeHighlightMenuPlugin() {
     return unregisterListener;
   }, [editor]);
 
+  useEffect(() => {
+    return editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        setIsEditorFocused(false);
+        hideCodeMenu();
+        return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+  }, [editor]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      setIsEditorFocused(true);
+    };
+
+    const handleBlur = () => {
+      setIsEditorFocused(false);
+      hideCodeMenu();
+    };
+
+    return editor.registerRootListener((rootElement, prevRootElement) => {
+      if (rootElement) {
+        rootElement.addEventListener("focus", handleFocus);
+        rootElement.addEventListener("blur", handleBlur);
+      }
+
+      if (prevRootElement) {
+        prevRootElement.removeEventListener("focus", handleFocus);
+        prevRootElement.removeEventListener("blur", handleBlur);
+      }
+    });
+  }, [editor]);
+
   return (
     codeBlockCoords &&
+    isEditorFocused &&
     createPortal(
       <CodeMenu codeBlockCoords={codeBlockCoords} codeNodeKey={codeNodeKey} />,
       DOM_ELEMENT
