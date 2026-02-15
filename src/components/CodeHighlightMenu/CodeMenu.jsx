@@ -60,6 +60,7 @@ export function CodeMenu({ codeBlockCoords, codeNodeKey }) {
 
   return (
     <ComboBox
+      id="code-highlight-menu"
       ref={codeMenuRef}
       style={{
         position: "absolute",

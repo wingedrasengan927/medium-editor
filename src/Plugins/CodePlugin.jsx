@@ -18,7 +18,7 @@ import {
   $isLineBreakNode,
   $isParagraphNode,
 } from "lexical";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { getSelectedNode } from "./TextFormatPlugin";
 import { $findMatchingParent } from "@lexical/utils";
@@ -37,17 +37,46 @@ function CodeHighlightMenuPlugin() {
   const [codeBlockCoords, setCodeBlockCoords] = useState(null);
   const [codeNodeKey, setCodeNodeKey] = useState(null);
   const [isEditorFocused, setIsEditorFocused] = useState(false);
+  const [isCodeMenuFocused, setIsCodeMenuFocused] = useState(false);
   const [editor] = useLexicalComposerContext();
 
-  const hideCodeMenu = () => {
+  const hideCodeMenu = useCallback(() => {
     setCodeBlockCoords(null);
     setCodeNodeKey(null);
-  };
+  }, []);
+
+  const isFocusInCodeMenu = useCallback(() => {
+    const codeMenu = document.getElementById("code-highlight-menu");
+    const activeElement = document.activeElement;
+
+    return !!(
+      codeMenu &&
+      activeElement &&
+      (codeMenu === activeElement || codeMenu.contains(activeElement))
+    );
+  }, []);
+
+  const syncMenuFocusState = useCallback(() => {
+    const menuFocused = isFocusInCodeMenu();
+    setIsCodeMenuFocused(menuFocused);
+    return menuFocused;
+  }, [isFocusInCodeMenu]);
+
+  const handleEditorBlur = useCallback(() => {
+    const menuFocused = syncMenuFocusState();
+    setIsEditorFocused(false);
+
+    if (!menuFocused) {
+      hideCodeMenu();
+    }
+  }, [hideCodeMenu, syncMenuFocusState]);
 
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
+        const menuFocused = syncMenuFocusState();
+
         const rootElement = editor.getRootElement();
         if (rootElement) {
           const hasFocus =
@@ -60,7 +89,9 @@ function CodeHighlightMenuPlugin() {
         const selection = $getSelection();
 
         if (!$isRangeSelection(selection)) {
-          hideCodeMenu();
+          if (!menuFocused) {
+            hideCodeMenu();
+          }
           return false;
         }
 
@@ -78,7 +109,9 @@ function CodeHighlightMenuPlugin() {
           setCodeBlockCoords({ x: X, y: Y });
           setCodeNodeKey(codeNode.getKey());
         } else {
-          hideCodeMenu();
+          if (!menuFocused) {
+            hideCodeMenu();
+          }
         }
 
         return false;
@@ -86,29 +119,26 @@ function CodeHighlightMenuPlugin() {
       COMMAND_PRIORITY_HIGH
     );
     return unregisterListener;
-  }, [editor]);
+  }, [editor, syncMenuFocusState, hideCodeMenu]);
 
   useEffect(() => {
     return editor.registerCommand(
       BLUR_COMMAND,
       () => {
-        setIsEditorFocused(false);
-        hideCodeMenu();
+        setTimeout(handleEditorBlur, 0);
         return false;
       },
       COMMAND_PRIORITY_HIGH
     );
-  }, [editor]);
+  }, [editor, handleEditorBlur]);
 
   useEffect(() => {
     const handleFocus = () => {
       setIsEditorFocused(true);
+      setIsCodeMenuFocused(false);
     };
 
-    const handleBlur = () => {
-      setIsEditorFocused(false);
-      hideCodeMenu();
-    };
+    const handleBlur = () => setTimeout(handleEditorBlur, 0);
 
     return editor.registerRootListener((rootElement, prevRootElement) => {
       if (rootElement) {
@@ -121,11 +151,11 @@ function CodeHighlightMenuPlugin() {
         prevRootElement.removeEventListener("blur", handleBlur);
       }
     });
-  }, [editor]);
+  }, [editor, handleEditorBlur]);
 
   return (
     codeBlockCoords &&
-    isEditorFocused &&
+    (isEditorFocused || isCodeMenuFocused) &&
     createPortal(
       <CodeMenu codeBlockCoords={codeBlockCoords} codeNodeKey={codeNodeKey} />,
       DOM_ELEMENT
