@@ -21,6 +21,7 @@ import {
   COMMAND_PRIORITY_NORMAL,
   BLUR_COMMAND,
   $setSelection,
+  PASTE_COMMAND,
 } from "lexical";
 import {
   $createMathHighlightNodeBlock,
@@ -72,6 +73,34 @@ const getMatch = (text, delimiters) => {
 
   return earliest;
 };
+
+const getSelectedMathHighlightContainer = (selection, nodeMatcher) => {
+  if (!$isRangeSelection(selection)) {
+    return null;
+  }
+
+  const anchorNode = selection.anchor.getNode();
+  const focusNode = selection.focus.getNode();
+  const anchorContainer = nodeMatcher(anchorNode)
+    ? anchorNode
+    : $findMatchingParent(anchorNode, nodeMatcher);
+  const focusContainer = nodeMatcher(focusNode)
+    ? focusNode
+    : $findMatchingParent(focusNode, nodeMatcher);
+
+  if (!anchorContainer || !focusContainer) {
+    return null;
+  }
+
+  return anchorContainer.getKey() === focusContainer.getKey()
+    ? anchorContainer
+    : null;
+};
+
+const getClipboardPlainText = (clipboardData) =>
+  clipboardData.getData("text/plain") ||
+  clipboardData.getData("text") ||
+  clipboardData.getData("text/uri-list");
 
 export function MathInlinePlugin() {
   const [editor] = useLexicalComposerContext();
@@ -293,6 +322,37 @@ export function MathInlinePlugin() {
         }
 
         return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+  }, [editor]);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      PASTE_COMMAND,
+      (event) => {
+        const clipboardData = event.clipboardData;
+        if (!clipboardData) {
+          return false;
+        }
+
+        const selection = $getSelection();
+        const mathHighlightNode = getSelectedMathHighlightContainer(
+          selection,
+          $isMathHighlightNodeInline
+        );
+        if (!mathHighlightNode) {
+          return false;
+        }
+
+        const pastedText = getClipboardPlainText(clipboardData);
+        if (!pastedText) {
+          return false;
+        }
+
+        event.preventDefault();
+        selection.insertText(pastedText);
+        return true;
       },
       COMMAND_PRIORITY_HIGH
     );
@@ -581,6 +641,37 @@ export function MathBlockPlugin() {
         }
 
         return false;
+      },
+      COMMAND_PRIORITY_HIGH
+    );
+  }, [editor]);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      PASTE_COMMAND,
+      (event) => {
+        const clipboardData = event.clipboardData;
+        if (!clipboardData) {
+          return false;
+        }
+
+        const selection = $getSelection();
+        const mathHighlightNode = getSelectedMathHighlightContainer(
+          selection,
+          $isMathHighlightNodeBlock
+        );
+        if (!mathHighlightNode) {
+          return false;
+        }
+
+        const pastedText = getClipboardPlainText(clipboardData);
+        if (!pastedText) {
+          return false;
+        }
+
+        event.preventDefault();
+        selection.insertRawText(pastedText);
+        return true;
       },
       COMMAND_PRIORITY_HIGH
     );
