@@ -34,6 +34,16 @@
     "react-aria-components": ">=1.8.0",
     "react-dom": ">=18.0.0"
   },
+  "dependencies": {
+    "@lexical/code": ">=0.39.0",
+    "@lexical/html": ">=0.39.0",
+    "@lexical/link": ">=0.39.0",
+    "@lexical/list": ">=0.39.0",
+    "@lexical/rich-text": ">=0.39.0",
+    "@lexical/selection": ">=0.39.0",
+    "@lexical/utils": ">=0.39.0",
+    "prismjs": "^1.30.0"
+  },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/react": "^19.1.2",

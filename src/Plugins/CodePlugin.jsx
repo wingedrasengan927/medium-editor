@@ -1,3 +1,4 @@
+import "../prismSetup";
 import {
   $createCodeNode,
   $isCodeNode,

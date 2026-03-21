@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => {
             /^react($|\/)/,
             /^react-dom($|\/)/,
             /^lexical($|\/)/,
-            /^@lexical\/react($|\/)/,
             /^@lexical\//,
             /^react-aria-components($|\/)/,
             /^@react-aria\//,
