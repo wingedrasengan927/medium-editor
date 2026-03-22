@@ -222,3 +222,13 @@
   list-style-type: upper-roman;
   /* I, II, III */
 }
+
+@media (max-width: 640px) {
+  .editor-input {
+    font-size: 18px;
+  }
+
+  .medium-code {
+    font-size: calc(100% - 4px);
+  }
+}
