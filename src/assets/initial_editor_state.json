@@ -43,7 +43,7 @@
       {
         "type": "image",
         "version": 1,
-        "src": "http://localhost:8000/uploads/c238881c030141d3a3140b661ed0c378.png"
+        "src": "http://localhost:8000/media/default/uploads/c238881c030141d3a3140b661ed0c378.png"
       },
       {
         "children": [],
@@ -68,7 +68,7 @@
       {
         "type": "image",
         "version": 1,
-        "src": "http://localhost:8000/uploads/2ae4d39eed4d41d995e6746e97a78cc4.png"
+        "src": "http://localhost:8000/media/default/uploads/2ae4d39eed4d41d995e6746e97a78cc4.png"
       },
       {
         "children": [],

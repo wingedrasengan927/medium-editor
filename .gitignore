@@ -15,9 +15,9 @@ dist-lib
 *.local
 
 # Backend
-backend/uploads/
 backend/__pycache__/
 backend/.venv/
+backend/articles/
 
 # Editor directories and files
 .vscode/*

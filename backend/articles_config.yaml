@@ -1,0 +1,5 @@
+articles:
+  - id: default
+    title: Default Article
+  - id: getting-started
+    title: Getting Started

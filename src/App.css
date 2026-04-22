@@ -38,6 +38,46 @@
   display: flex;
 }
 
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.current-article {
+  font-family: "firacode", monospace;
+  font-size: 0.875rem;
+  color: var(--text-color-dark);
+}
+
+.navbar-popover {
+  background: white;
+  border: 1px solid var(--border-color-dark);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  padding: 4px;
+  min-width: 160px;
+  outline: none;
+}
+
+.navbar-menu {
+  outline: none;
+}
+
+.navbar-menu-item {
+  padding: 6px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: "firacode", monospace;
+  font-size: 0.9rem;
+  outline: none;
+
+  &[data-focused],
+  &[data-hovered] {
+    background: var(--button-background-pressed-dark, #eee);
+  }
+}
+
 .navbar-btn {
   color: var(--text-color-dark);
   background: var(--button-background-dark);
