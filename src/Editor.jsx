@@ -26,6 +26,7 @@ export default function Editor({
   blockToolbarGap,
   spellCheck,
   isHeadingOneFirst,
+  onImageUpload,
 }) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -44,7 +45,7 @@ export default function Editor({
       <MathBlockPlugin />
       <CodePlugin />
       <HorizontalDividerPlugin />
-      <ImagePlugin />
+      <ImagePlugin onImageUpload={onImageUpload} />
       <ListPlugin />
       <ListPluginExtended />
       <TabInterceptorPlugin />
