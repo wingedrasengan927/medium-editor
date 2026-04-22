@@ -6,19 +6,28 @@ import {
 } from "lexical";
 import { addClassNamesToElement } from "@lexical/utils";
 
+export const IMAGE_UPLOAD_STATE = {
+  UPLOADED: "uploaded",
+  UPLOADING: "uploading",
+  ERROR: "error",
+};
+
 export class ImageNode extends DecoratorNode {
   static getType() {
     return "image";
   }
 
   static clone(node) {
-    return new ImageNode(node.__src, node.__key);
+    const clone = new ImageNode(node.__src, node.__uploadState, node.__key);
+    clone.__attributes = { ...node.__attributes };
+    return clone;
   }
 
-  constructor(src, key) {
+  constructor(src, uploadState = IMAGE_UPLOAD_STATE.UPLOADED, key) {
     super(key);
     this.__src = src;
     this.__attributes = {};
+    this.__uploadState = uploadState;
   }
 
   createDOM(config) {
@@ -79,6 +88,22 @@ export class ImageNode extends DecoratorNode {
     return this.__src;
   }
 
+  setSrc(src) {
+    const self = this.getWritable();
+    self.__src = src;
+    return self;
+  }
+
+  getUploadState() {
+    return this.__uploadState;
+  }
+
+  setUploadState(state) {
+    const self = this.getWritable();
+    self.__uploadState = state;
+    return self;
+  }
+
   getTextContent() {
     return "\n";
   }
@@ -89,7 +114,20 @@ export class ImageNode extends DecoratorNode {
 
   decorate() {
     const props = { src: this.getSrc(), ...this.__attributes };
-    return <img {...props} />;
+    const state = this.__uploadState;
+
+    if (state === IMAGE_UPLOAD_STATE.UPLOADED) {
+      return <img {...props} />;
+    }
+
+    return (
+      <div className={`medium-img-wrapper medium-img-${state}`}>
+        <img {...props} />
+        <div className="medium-img-overlay">
+          {state === IMAGE_UPLOAD_STATE.UPLOADING ? "Uploading…" : "Upload failed"}
+        </div>
+      </div>
+    );
   }
 }
 
@@ -111,8 +149,8 @@ function $convertImageElement(element) {
   return { node };
 }
 
-export function $createImageNode(src) {
-  return $applyNodeReplacement(new ImageNode(src));
+export function $createImageNode(src, uploadState) {
+  return $applyNodeReplacement(new ImageNode(src, uploadState));
 }
 
 export function $isImageNode(node) {

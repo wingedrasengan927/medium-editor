@@ -13,49 +13,114 @@ import {
   PASTE_COMMAND,
 } from "lexical";
 import { useEffect, useRef } from "react";
-import { $createImageNode, $isImageNode, ImageNode } from "../nodes/ImageNode";
+import {
+  $createImageNode,
+  $isImageNode,
+  ImageNode,
+  IMAGE_UPLOAD_STATE,
+} from "../nodes/ImageNode";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 
 export const INSERT_IMAGE_COMMAND = createCommand("INSERT_IMAGE_COMMAND");
 const SELECTED_CLASS_NAME = "selected";
 
-// Helper to check if a file is an image
 function isImageFile(file) {
   return file && file.type && file.type.startsWith("image/");
 }
 
-export function ImagePlugin() {
+// Inserts an ImageNode at the current selection and returns its key so the
+// caller can update it later (e.g. when a background upload resolves).
+function $insertImageNode(src, uploadState) {
+  const prevSelection = $getPreviousSelection() || $getSelection();
+  if (!$isRangeSelection(prevSelection)) {
+    return null;
+  }
+
+  const imageNode = $createImageNode(src, uploadState);
+  prevSelection.insertNodes([imageNode]);
+
+  let nextNode =
+    imageNode.getNextSibling() || imageNode.getParent().getNextSibling();
+  if (!nextNode) {
+    nextNode = $createParagraphNode();
+    imageNode.insertAfter(nextNode);
+  }
+
+  imageNode.select();
+  return imageNode.getKey();
+}
+
+export function ImagePlugin({ onImageUpload }) {
   const [editor] = useLexicalComposerContext();
   const selectedImgElemRef = useRef(null);
+  const onImageUploadRef = useRef(onImageUpload);
+
+  useEffect(() => {
+    onImageUploadRef.current = onImageUpload;
+  }, [onImageUpload]);
 
   useEffect(() => {
     if (!editor.hasNode(ImageNode)) {
       throw new Error("ImagePlugin: ImageNode not registered on editor");
     }
+  }, [editor]);
 
+  // Kick off an async upload for a node already inserted with a blob URL.
+  // On success swap the src to the returned URL and revoke the blob.
+  // On failure mark the node as errored but keep the blob URL visible.
+  const startUpload = (nodeKey, file, blobUrl) => {
+    const upload = onImageUploadRef.current;
+    if (!upload) return;
+
+    Promise.resolve()
+      .then(() => upload(file))
+      .then((remoteUrl) => {
+        if (typeof remoteUrl !== "string" || !remoteUrl) {
+          throw new Error("onImageUpload must resolve to a URL string");
+        }
+        editor.update(() => {
+          const node = $getNodeByKey(nodeKey);
+          if ($isImageNode(node)) {
+            node.setSrc(remoteUrl);
+            node.setUploadState(IMAGE_UPLOAD_STATE.UPLOADED);
+          }
+        });
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch((err) => {
+        console.error("ImagePlugin: image upload failed", err);
+        editor.update(() => {
+          const node = $getNodeByKey(nodeKey);
+          if ($isImageNode(node)) {
+            node.setUploadState(IMAGE_UPLOAD_STATE.ERROR);
+          }
+        });
+      });
+  };
+
+  useEffect(() => {
     const unregisterCommand = editor.registerCommand(
       INSERT_IMAGE_COMMAND,
       (payload) => {
-        const src = payload;
-        const prevSelection = $getPreviousSelection();
+        // String payload: caller already has a usable URL — just insert.
+        if (typeof payload === "string") {
+          $insertImageNode(payload, IMAGE_UPLOAD_STATE.UPLOADED);
+          return true;
+        }
 
-        if ($isRangeSelection(prevSelection)) {
-          const imageNode = $createImageNode(src);
-          prevSelection.insertNodes([imageNode]);
-
-          let nextNode =
-            imageNode.getNextSibling() ||
-            imageNode.getParent().getNextSibling();
-
-          // insert a new paragraph node after the image node
-          if (!nextNode) {
-            nextNode = $createParagraphNode();
-            imageNode.insertAfter(nextNode);
+        // File payload: show immediately via blob URL, upload in background.
+        if (payload instanceof File && isImageFile(payload)) {
+          const blobUrl = URL.createObjectURL(payload);
+          const hasUpload = !!onImageUploadRef.current;
+          const key = $insertImageNode(
+            blobUrl,
+            hasUpload
+              ? IMAGE_UPLOAD_STATE.UPLOADING
+              : IMAGE_UPLOAD_STATE.UPLOADED
+          );
+          if (key && hasUpload) {
+            startUpload(key, payload, blobUrl);
           }
-
-          // select the image after inserting
-          imageNode.select();
-
           return true;
         }
 
@@ -72,7 +137,6 @@ export function ImagePlugin() {
     const unregisterCommand = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
-        // clear previous selection
         if (selectedImgElemRef.current) {
           selectedImgElemRef.current.classList.remove(SELECTED_CLASS_NAME);
           selectedImgElemRef.current = null;
@@ -96,54 +160,22 @@ export function ImagePlugin() {
     return unregisterCommand;
   }, [editor]);
 
-  // --- Handle PASTE_COMMAND ---
   useEffect(() => {
     const unregisterPasteCommand = editor.registerCommand(
       PASTE_COMMAND,
       (event) => {
         const clipboardData = event.clipboardData;
-        if (!clipboardData) {
-          return false;
-        }
+        if (!clipboardData) return false;
 
-        const files = Array.from(clipboardData.files);
-        const imageFiles = files.filter(isImageFile);
+        const imageFiles = Array.from(clipboardData.files).filter(isImageFile);
+        if (imageFiles.length !== 1) return false;
 
-        if (imageFiles.length === 1) {
-          event.preventDefault();
+        const selection = $getSelection() || $getPreviousSelection();
+        if (!$isRangeSelection(selection)) return false;
 
-          const imageFile = imageFiles[0];
-          const selection = $getSelection() || $getPreviousSelection();
-
-          if (!$isRangeSelection(selection)) {
-            return false;
-          }
-
-          // Create a blob URL for the single image
-          const imageUrl = URL.createObjectURL(imageFile);
-          const imageNode = $createImageNode(imageUrl);
-
-          // Insert the image node
-          selection.insertNodes([imageNode]);
-
-          // Insert a paragraph node after the image node if the next node is empty
-          let nextNode =
-            imageNode.getNextSibling() ||
-            imageNode.getParent().getNextSibling();
-
-          if (!nextNode) {
-            nextNode = $createParagraphNode();
-            imageNode.insertAfter(nextNode);
-          }
-
-          imageNode.select();
-
-          // URL.revokeObjectURL(imageUrl);
-
-          return true;
-        }
-
-        return false;
+        event.preventDefault();
+        editor.dispatchCommand(INSERT_IMAGE_COMMAND, imageFiles[0]);
+        return true;
       },
       COMMAND_PRIORITY_HIGH
     );
@@ -152,7 +184,6 @@ export function ImagePlugin() {
   }, [editor]);
 
   return (
-    // Make the Image selectable
     <NodeEventPlugin
       nodeType={ImageNode}
       eventType={"click"}

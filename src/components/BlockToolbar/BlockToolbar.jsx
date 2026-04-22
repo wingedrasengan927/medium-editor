@@ -29,36 +29,17 @@ function BlockToolbar() {
 
   const handleFileSelect = (fileList) => {
     if (!fileList || fileList.length === 0) {
-      return; // No file selected or user cancelled
+      return;
     }
 
-    const file = fileList[0]; // Get the first selected file
+    const file = fileList[0];
 
-    // Basic MIME type check
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file.");
       return;
     }
 
-    // Use FileReader to get Data URL
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const imageDataUrl = event.target?.result;
-      if (typeof imageDataUrl === "string") {
-        editor.dispatchCommand(INSERT_IMAGE_COMMAND, imageDataUrl);
-      } else {
-        alert("Failed to read file as Data URL.");
-      }
-    };
-
-    reader.onerror = (error) => {
-      console.error("Error reading file:", error);
-      alert("Error reading file.");
-    };
-
-    // Start reading the file content as a Data URL
-    reader.readAsDataURL(file);
+    editor.dispatchCommand(INSERT_IMAGE_COMMAND, file);
   };
 
   return (
