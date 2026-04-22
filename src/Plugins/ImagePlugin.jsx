@@ -8,9 +8,11 @@ import {
   SELECTION_CHANGE_COMMAND,
   $getSelection,
   $isNodeSelection,
+  $setSelection,
   COMMAND_PRIORITY_LOW,
   $getNodeByKey,
   PASTE_COMMAND,
+  BLUR_COMMAND,
 } from "lexical";
 import { useEffect, useRef } from "react";
 import {
@@ -158,6 +160,27 @@ export function ImagePlugin({ onImageUpload }) {
     );
 
     return unregisterCommand;
+  }, [editor]);
+
+  // Unselect image node when the editor loses focus
+  useEffect(() => {
+    const unregisterBlurCommand = editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        const selection = $getSelection();
+        if (
+          $isNodeSelection(selection) &&
+          selection.getNodes().length === 1 &&
+          $isImageNode(selection.getNodes()[0])
+        ) {
+          $setSelection(null);
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+
+    return unregisterBlurCommand;
   }, [editor]);
 
   useEffect(() => {
