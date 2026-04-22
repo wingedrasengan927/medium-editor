@@ -159,7 +159,7 @@ export function MathInlinePlugin() {
 
         if ($isNodeSelection(selection)) {
           const nodes = selection.getNodes();
-          if (nodes.length === 1 && $isMathNode(nodes[0])) {
+          if (nodes.length === 1 && $isMathNode(nodes[0]) && editor.isEditable()) {
             const mathNode = nodes[0];
             if (mathNode.isInline()) {
               let equation = mathNode.getEquation();
@@ -390,6 +390,9 @@ export function MathInlinePlugin() {
       nodeType={MathNode}
       eventType={"click"}
       eventListener={(event, editor, key) => {
+        if (!editor.isEditable()) {
+          return;
+        }
         const node = $getNodeByKey(key);
         if (node && node.isInline()) {
           node.select();
@@ -484,7 +487,7 @@ export function MathBlockPlugin() {
 
         if ($isNodeSelection(selection)) {
           const nodes = selection.getNodes();
-          if (nodes.length === 1 && $isMathNode(nodes[0])) {
+          if (nodes.length === 1 && $isMathNode(nodes[0]) && editor.isEditable()) {
             const mathNode = nodes[0];
             if (!mathNode.isInline()) {
               let equation = mathNode.getEquation();
@@ -682,6 +685,9 @@ export function MathBlockPlugin() {
       nodeType={MathNode}
       eventType={"click"}
       eventListener={(event, editor, key) => {
+        if (!editor.isEditable()) {
+          return;
+        }
         const node = $getNodeByKey(key);
         if (node && !node.isInline()) {
           node.select();

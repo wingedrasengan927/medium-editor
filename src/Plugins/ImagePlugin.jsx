@@ -211,6 +211,9 @@ export function ImagePlugin({ onImageUpload }) {
       nodeType={ImageNode}
       eventType={"click"}
       eventListener={(event, editor, key) => {
+        if (!editor.isEditable()) {
+          return;
+        }
         const node = $getNodeByKey(key);
         node.select();
       }}

@@ -24,11 +24,25 @@ export default function InlineToolbarPlugin() {
   const [shouldShow, setShouldShow] = useState(false);
   const [editor] = useLexicalComposerContext();
 
+  // Hide the toolbar whenever the editor becomes non-editable
+  useEffect(() => {
+    return editor.registerEditableListener((editable) => {
+      if (!editable) {
+        setShouldShow(false);
+      }
+    });
+  }, [editor]);
+
   // Listen for selection changes and show/hide the toolbar
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
+        if (!editor.isEditable()) {
+          setShouldShow(false);
+          return false;
+        }
+
         const selection = $getSelection();
 
         if (!$isRangeSelection(selection) || selection.isCollapsed()) {
