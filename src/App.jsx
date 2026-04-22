@@ -9,6 +9,25 @@ import initialEditorState from "./assets/initial_editor_state.json";
 
 import "./App.css";
 
+const IMAGE_UPLOAD_URL = "http://localhost:8000/images";
+
+async function onImageUpload(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(IMAGE_UPLOAD_URL, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error(`upload failed: ${res.status}`);
+  }
+
+  const { url } = await res.json();
+  return url;
+}
+
 function Navbar({ onCopyHTML, onCopyJSON, onCopyText }) {
   return (
     <nav className="navbar">
@@ -94,6 +113,7 @@ function App() {
           blockToolbarGap={12}
           isHeadingOneFirst={true}
           spellCheck={false}
+          onImageUpload={onImageUpload}
         />
       </div>
     </div>

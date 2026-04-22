@@ -1,0 +1,10 @@
+[project]
+name = "medium-editor-backend"
+version = "0.1.0"
+description = "Minimal image upload backend for the medium-editor demo"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
+]
