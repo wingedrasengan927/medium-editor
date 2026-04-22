@@ -80,10 +80,24 @@ export default function BlockToolbarPlugin({ toolbarGap }) {
     return unregisterListener;
   }, [editor]);
 
+  // Hide the toolbar whenever the editor becomes non-editable
+  useEffect(() => {
+    return editor.registerEditableListener((editable) => {
+      if (!editable) {
+        setSelectionRectCoords(null);
+      }
+    });
+  }, [editor]);
+
   useEffect(() => {
     const unregisterListener = editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
+        if (!editor.isEditable()) {
+          setSelectionRectCoords(null);
+          return false;
+        }
+
         // Check editor focus state during selection changes
         const rootElement = editor.getRootElement();
         if (rootElement) {
